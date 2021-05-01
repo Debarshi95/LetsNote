@@ -5,9 +5,8 @@ const useStyles = makeStyles((theme) => ({
   btnSubmittingRoot: {
     width: "100%",
     padding: "8px 10px",
-    margin: "8px 0",
-    background: theme.palette.primary.main,
-    borderRadius: "8px",
+    margin: "12px 0",
+    borderRadius: "4px",
     display: "flex",
     justifyContent: "center",
     border: 0,

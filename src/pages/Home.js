@@ -1,20 +1,22 @@
 import { makeStyles } from "@material-ui/core";
 import React from "react";
 import Hero from "../components/Hero";
-import HeroReview from "../components/HeroReview";
 import Navbar from "../components/Navbar";
 
 const useStyles = makeStyles((theme) => ({
-  homeRoot: {},
+  homeRoot: {
+    background: theme.palette.primary.main,
+    minHeight: "100vh",
+  },
 }));
 function Home() {
-  return (
-    <>
-      <Navbar />
+  const classes = useStyles();
 
+  return (
+    <div className={classes.homeRoot}>
+      <Navbar />
       <Hero />
-      <HeroReview />
-    </>
+    </div>
   );
 }
 

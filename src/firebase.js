@@ -16,17 +16,9 @@ const auth = app.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 const timeStamp = firebase.firestore.FieldValue.serverTimestamp;
 
-const checkUsernameExists = async (username) => {
-  const res = await firestore
-    .collection("users")
-    .where("username", "==", username)
-    .get();
-
-  return res.docs.length > 0;
-};
-
-const saveUser = async (fullname, username, email) => {
-  const res = firestore.collection("users").add({
+const saveUser = async (uid, fullname, username, email) => {
+  const res = await firestore.collection("users").add({
+    uid,
     fullname,
     username,
     email,
@@ -34,4 +26,5 @@ const saveUser = async (fullname, username, email) => {
   });
   return res;
 };
-export { firestore, auth, googleProvider, checkUsernameExists, saveUser };
+
+export { firestore, auth, timeStamp, googleProvider, saveUser };

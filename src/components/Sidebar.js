@@ -5,25 +5,27 @@ import {
   IconButton,
   ListItem,
   ListItemIcon,
-  ListItemText,
   makeStyles,
-  MenuItem,
   SwipeableDrawer,
   Typography,
   useMediaQuery,
 } from "@material-ui/core";
 import {
   AddRounded,
-  Book,
   DeleteSharp,
   NotesSharp,
   Menu,
+  ExitToAppOutlined,
 } from "@material-ui/icons";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../features/userSlice";
+import { setNotesEmpty } from "../features/notesSlice";
+import { auth } from "../firebase";
 
 const useStyles = makeStyles({
   sidebarRoot: {
-    width: "270px",
+    width: "320px",
     padding: "1.5rem 1rem",
     display: "flex",
     flexDirection: "column",
@@ -42,63 +44,88 @@ const useStyles = makeStyles({
 const listItems = [
   { icon: <AddRounded />, text: "New Note" },
   { icon: <NotesSharp />, text: "Notes" },
-  { icon: <Book />, text: "Notebooks" },
   { icon: <DeleteSharp />, text: "Trash" },
 ];
 
-function Sidebar() {
+function Sidebar({ handleComponentSelection }) {
   const [open, setOpen] = React.useState(false);
-  const classes = useStyles({ open });
+  const classes = useStyles();
   const sm = useMediaQuery("(max-width:600px)");
+  const { user } = useSelector(selectUser);
+  const dispatch = useDispatch();
 
+  const sideBarItems = (
+    <>
+      <ListItem className={classes.userInfo}>
+        <ListItemIcon>
+          <Avatar>{user?.fullname?.split("")[0]}</Avatar>
+        </ListItemIcon>
+        <Typography variant="h6">{user?.fullname?.split(" ")[0]}</Typography>
+      </ListItem>
+      <Divider />
+      {listItems.map((item) => (
+        <ListItem key={item.text}>
+          <Button
+            fullWidth
+            startIcon={item.icon}
+            onClick={() => handleComponentSelection(item.text)}
+            style={{
+              color: `${sm ? "#000" : "#bdbdbd"}`,
+              textTransform: "initial",
+              display: "flex",
+              justifyContent: "start",
+              fontSize: "16px",
+              fontFamily: "inherit",
+              fontWeight: "bold",
+            }}
+          >
+            {item.text}
+          </Button>
+        </ListItem>
+      ))}
+      <ListItem>
+        <Button
+          fullWidth
+          onClick={() => {
+            dispatch(setNotesEmpty());
+            auth.signOut();
+          }}
+          startIcon={<ExitToAppOutlined />}
+          style={{
+            color: `${sm ? "#000" : "#bdbdbd"}`,
+            textTransform: "initial",
+            display: "flex",
+            justifyContent: "start",
+            fontSize: "16px",
+            fontFamily: "inherit",
+            fontWeight: "bold",
+          }}
+        >
+          Logout
+        </Button>
+      </ListItem>
+    </>
+  );
   return (
     <>
       {sm && (
         <>
-          <IconButton onClick={() => setOpen(!open)}>
-            <Menu style={{ justifyContent: "start" }} />
-          </IconButton>
+          <div>
+            <IconButton onClick={() => setOpen(!open)}>
+              <Menu />
+            </IconButton>
+          </div>
           <SwipeableDrawer
             open={open}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
           >
-            <ListItem className={classes.userInfo}>
-              <ListItemIcon>
-                <Avatar>D</Avatar>
-              </ListItemIcon>
-              <Typography variant="h6">Debarshi</Typography>
-            </ListItem>
-            <Divider />
-            {listItems.map((item) => (
-              <ListItem key={item.text}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
+            {sideBarItems}
           </SwipeableDrawer>
         </>
       )}
 
-      {!sm && (
-        <div className={classes.sidebarRoot}>
-          <ListItem className={classes.userInfo}>
-            <ListItemIcon>
-              <Avatar>D</Avatar>
-            </ListItemIcon>
-            <Typography variant="h5">Debarshi</Typography>
-          </ListItem>
-          <Divider />
-          {listItems.map((item) => (
-            <div key={item.text}>
-              <ListItem>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItem>
-            </div>
-          ))}
-        </div>
-      )}
+      {!sm && <div className={classes.sidebarRoot}>{sideBarItems}</div>}
     </>
   );
 }

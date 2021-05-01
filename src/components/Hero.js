@@ -1,91 +1,107 @@
-import { makeStyles } from "@material-ui/core";
+import {
+  ListItem,
+  ListItemIcon,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
+import { FiberManualRecord } from "@material-ui/icons";
 import React from "react";
 import { Link } from "react-router-dom";
 import * as ROUTES from "../constant/routes";
 
 const useStyles = makeStyles((theme) => ({
   heroRoot: {
+    display: "flex",
     width: "70%",
-    margin: "3rem auto",
+    margin: "6rem auto",
+    [theme.breakpoints.down("md")]: {
+      width: "100%",
+    },
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column-reverse",
+    },
+    [theme.breakpoints.down("xs")]: {
+      margin: "3rem auto",
+    },
+  },
+  hero: {
+    flex: 1,
+    margin: "2rem 0",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-  },
-  heroTitle: {
-    textAlign: "center",
-    fontSize: "48px",
-    margin: "6px 0",
-  },
-  heroMessage: {
-    fontSize: "26px",
-    fontWeight: 400,
-    textAlign: "center",
-  },
-
-  heroBtnLink: {
-    padding: "1rem 5rem",
-    background: theme.palette.primary.main,
-    borderRadius: "2px",
-    color: theme.palette.text.secondary,
-    fontWeight: 500,
-    margin: "1.5rem 0",
-  },
-  heroAccount: {
-    fontSize: "18px",
-    fontWeight: 400,
-  },
-  heroDetails: {
-    display: "flex",
-    height: 300,
-    alignItems: "center",
-
-    "& > div": {
-      margin: "1rem",
+    [theme.breakpoints.down("md")]: {
+      width: "100%",
+      alignItems: "center",
     },
 
-    "& > div> h2, p": {
-      textAlign: "center",
+    "& .MuiTypography-h2": {
+      fontFamily: "inherit",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "26px",
+      },
     },
+    "& a": {
+      background: theme.palette.secondary.main,
+      padding: "14px 18px",
+      width: "190px",
+      borderRadius: "40px",
+      fontFamily: "inherit",
+      fontWeight: 600,
+      display: "flex",
+      justifyContent: "center",
+      marginLeft: "1rem",
+    },
+  },
+  heroImg: {
+    flex: 1,
+    width: "100%",
+  },
+  heroNotes: {
+    margin: "2rem 0",
+    fontFamily: "inherit",
   },
 }));
-
 function Hero() {
   const classes = useStyles();
   return (
     <div className={classes.heroRoot}>
-      <h1 className={classes.heroTitle}>Accomplish more with better notes</h1>
-      <h3 className={classes.heroMessage}>
-        LetsNote helps you capture ideas and find them fast.
-      </h3>
-      <Link to={ROUTES.HOME} className={classes.heroBtnLink}>
-        Sign up for free
-      </Link>
-      <h4 className={classes.heroAccount}>
-        Have an account? <Link to={ROUTES.SIGN_IN}>Log in</Link>
-      </h4>
-
-      <div className={classes.heroDetails}>
-        <div>
-          <h2>WORK ANYWHERE</h2>
-          <p>
-            Keep important info handy by syncing your notes to all your devices
-          </p>
+      <div className={classes.hero}>
+        <Typography component="h2" variant="h2">
+          LetsNote
+        </Typography>
+        <div className={classes.heroNotes}>
+          <ListItem disableGutters>
+            <ListItemIcon>
+              <FiberManualRecord />
+            </ListItemIcon>
+            <Typography component="h5" variant="h5">
+              Work anywhere
+            </Typography>
+          </ListItem>
+          <ListItem disableGutters>
+            <ListItemIcon>
+              <FiberManualRecord />
+            </ListItemIcon>
+            <Typography component="h5" variant="h5">
+              Your notes, your way
+            </Typography>
+          </ListItem>
+          <ListItem disableGutters>
+            <ListItemIcon>
+              <FiberManualRecord />
+            </ListItemIcon>
+            <Typography component="h5" variant="h5">
+              Find things fast
+            </Typography>
+          </ListItem>
         </div>
-        <div>
-          <h2> YOUR NOTES, YOUR WAY</h2>
-          <p>
-            Express yourself with formatting tools that help you write how you
-            think.
-          </p>
-        </div>
-        <div>
-          <h2>FIND THINGS FAST</h2>
-          <p>
-            Get what you need, when you need it. Search gives you results as you
-            type.
-          </p>
-        </div>
+        <Link to={ROUTES.SIGN_UP}>SIGN UP</Link>
       </div>
+      <img
+        src="/images/note_banner.jpg"
+        alt="hero"
+        className={classes.heroImg}
+      />
     </div>
   );
 }

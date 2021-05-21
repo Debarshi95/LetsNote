@@ -27,6 +27,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set env
+        env:
+          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
+          REACT_APP_AUTH_DOMAIN: ${{secrets.REACT_APP_AUTH_DOMAIN}}
+          REACT_APP_PROJECT_ID: ${{secrets.REACT_APP_PROJECT_ID}}
+          REACT_APP_STORAGE_BUCKET: ${{secrets.REACT_APP_STORAGE_BUCKET}}
+          REACT_APP_MESSAGING_SENDER_ID: ${{secrets.REACT_APP_MESSAGING_SENDER_ID}}
+          REACT_APP_APP_ID: ${{secrets.REACT_APP_APP_ID}}
+
       # - name: Run the tests
       #   run: npm test
 
@@ -37,7 +46,7 @@ jobs:
         uses: South-Paw/action-netlify-deploy@v1.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          netlify-auth-token: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: "./build"
           draft: true

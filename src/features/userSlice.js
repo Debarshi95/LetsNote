@@ -1,38 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { firestore } from "../firebase";
 
-export const saveUserToDb = (
-  uid,
-  fullname,
-  email,
-  username,
-  photoURL,
-  refreshToken
-) => {
-  return async () => {
-    await firestore.collection("users").add({
-      uid,
-      fullname,
-      email,
-      username,
-      photoURL,
-      refreshToken,
+export const saveUserToDb = createAsyncThunk(
+  "user/saveUser",
+  async ({ user, username }) => {
+    const res = await firestore.collection("users").add({
+      uid: user.uid,
+      email: user.email,
+      username: username,
+      photoURL: user.photoURL,
+      refreshToken: user.refreshToken,
     });
-  };
-};
+    return res;
+  }
+);
 
-export const getUserById = (uid) => {
-  return async (dispatch) => {
-    const res = await firestore
-      .collection("users")
-      .where("uid", "==", uid)
-      .get();
-    const user = { id: res.docs[0].id, ...res.docs[0].data() };
-    dispatch(setUserActive({ user }));
-  };
-};
+export const getUserDataById = createAsyncThunk("user/getUser", async (uid) => {
+  const res = await firestore.collection("users").where("uid", "==", uid).get();
 
-export const checkUsernameExists = (username) => {
+  if (!res.docs.length > 0) {
+    throw Error("User does not exist. Please sign up first");
+  }
+
+  return { id: res.docs[0].id, ...res.docs[0].data() };
+});
+
+export const checkIfUserNameTaken = (username) => {
   return async () => {
     const res = await firestore
       .collection("users")
@@ -46,24 +39,16 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     user: null,
+    loading: false,
   },
   reducers: {
-    setUserActive: (state, action) => {
-      const { payload } = action;
-
-      state.user = {
-        ...payload.user,
-      };
-      // console.log(state.user);
-    },
-    setUserInactive: (state) => {
-      state.user = null;
-      // console.log(state);
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
   },
 });
 
-export const { setUserActive, setUserInactive } = userSlice.actions;
+export const { setUser } = userSlice.actions;
 export default userSlice.reducer;
 
 export const selectUser = (state) => state.user;

@@ -3,7 +3,7 @@ import MainRouter from "./MainRouter";
 import "./App.css";
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
-import { getUserById, setUserInactive } from "./features/userSlice";
+import { setUser } from "./features/userSlice";
 import { ToastProvider } from "react-toast-notifications";
 
 function App() {
@@ -12,9 +12,10 @@ function App() {
   React.useEffect(() => {
     const unsub = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        dispatch(getUserById(authUser.uid));
+        console.log("app js called");
+        dispatch(setUser(authUser));
       } else {
-        dispatch(setUserInactive());
+        dispatch(setUser(null));
       }
     });
     return () => unsub();

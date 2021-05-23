@@ -1,68 +1,58 @@
-import { IconButton, makeStyles } from "@material-ui/core";
+import { makeStyles, TextField } from "@material-ui/core";
 import React from "react";
 import ButtonSubmitting from "../components/ButtonSubmitting";
 import { Link, useHistory } from "react-router-dom";
 import * as ROUTES from "../constant/routes";
 import { auth } from "../firebase";
-import { checkUsernameExists, saveUserToDb } from "../features/userSlice";
+import { checkIfUserNameTaken, saveUserToDb } from "../features/userSlice";
 import { useDispatch } from "react-redux";
-import { ArrowBackSharp } from "@material-ui/icons";
+import {
+  PersonOutlineOutlined,
+  EmailOutlined,
+  LockOutlined,
+} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   signUpRoot: {
     width: "100%",
-    background: theme.palette.primary.main,
     display: "flex",
-    flexDirection: "column",
+    alignItems: "center",
     flex: 1,
-    justifyContent: "center",
+    [theme.breakpoints.down("xs")]: {
+      alignItems: "initial",
+    },
   },
   signUpCard: {
     width: "440px",
     margin: "1rem auto",
     padding: "2rem 4rem",
-    border: `1.5px solid ${theme.palette.secondary.main}`,
+    background: "#fff",
     borderRadius: "4px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     [theme.breakpoints.down("xs")]: {
       width: "100%",
-      border: 0,
       padding: "2rem 3rem",
-      height: "100%",
+      margin: 0,
     },
 
-    "& >h1,p": {
+    "& > h1, h4": {
       textAlign: "center",
+      color: theme.palette.primary.main,
+      fontWeight: "bold",
     },
-
-    "& >p": {
-      margin: "2rem 0",
+    "& > h4": {
+      margin: "0 0 22px 0",
+    },
+    "& > p": {
+      textAlign: "center",
     },
 
     "& > form": {
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
-    },
-
-    "& input": {
-      border: `1.8px solid ${theme.palette.secondary.main}`,
-      padding: "12px 16px",
-      borderRadius: "4px",
-      margin: "4px 0",
-      outline: "none",
-      [theme.breakpoints.down("xs")]: {
-        padding: "14px 16px",
-      },
-    },
-  },
-  buttonBack: {
-    width: "50px",
-    marginLeft: "4rem",
-    [theme.breakpoints.down("xs")]: {
-      marginLeft: 0,
     },
   },
 }));
@@ -71,7 +61,6 @@ function SignUp() {
   const classes = useStyles();
 
   const [input, setInput] = React.useState({
-    fullname: "",
     username: "",
     email: "",
     password: "",
@@ -85,16 +74,17 @@ function SignUp() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const usernameExists = await dispatch(
-        checkUsernameExists(input.username)
+      const usernameTaken = await dispatch(
+        checkIfUserNameTaken(input.username)
       );
-      if (usernameExists) {
+      // console.log(usernameTaken);
+      if (usernameTaken) {
         setSubmitting(false);
         setInput({
           ...input,
           password: "",
         });
-        setError("Username taken. Please try another.");
+        setError("Username taken. Please try another one.");
       } else {
         const newUser = await auth.createUserWithEmailAndPassword(
           input.email,
@@ -102,18 +92,11 @@ function SignUp() {
         );
 
         await newUser.user.updateProfile({
-          displayName: input.fullname,
+          username: input.username,
         });
 
         await dispatch(
-          saveUserToDb(
-            newUser.user.uid,
-            input.fullname,
-            input.email,
-            input.username,
-            newUser.user.photoURL,
-            newUser.user.refreshToken
-          )
+          saveUserToDb({ user: newUser.user, username: input.username })
         );
 
         history.push(`/${newUser.user.uid}/dashboard`);
@@ -131,56 +114,61 @@ function SignUp() {
 
   return (
     <div className={classes.signUpRoot}>
-      <IconButton
+      {/* <IconButton
         className={classes.buttonBack}
         onClick={() => history.goBack()}
       >
         <ArrowBackSharp />
-      </IconButton>
+      </IconButton> */}
       <div className={classes.signUpCard}>
         <h1>Sign Up</h1>
-        <p>Lorem ipsum dolor sit amet</p>
+        <h4>Sign up to get started</h4>
 
         <form autoComplete="off">
-          <input
-            type="text"
-            name="fullname"
-            placeholder="Fullname"
-            aria-label="Fullname"
-            value={input.fullname}
-            onChange={({ target }) =>
-              setInput({ ...input, [target.name]: target.value })
-            }
-          />
-          <input
+          <TextField
             type="text"
             name="username"
+            variant="filled"
             placeholder="Username"
             aria-label="Username"
             value={input.username}
             onChange={({ target }) =>
               setInput({ ...input, [target.name]: target.value })
             }
+            InputProps={{
+              disableUnderline: true,
+              startAdornment: <PersonOutlineOutlined />,
+            }}
           />
-          <input
+          <TextField
             type="email"
             name="email"
+            variant="filled"
             placeholder="Email"
             aria-label="Email"
             value={input.email}
             onChange={({ target }) =>
               setInput({ ...input, [target.name]: target.value })
             }
+            InputProps={{
+              disableUnderline: true,
+              startAdornment: <EmailOutlined />,
+            }}
           />
-          <input
+          <TextField
             type="password"
             name="password"
+            variant="filled"
             placeholder="Password"
             aria-label="Password"
             value={input.password}
             onChange={({ target }) =>
               setInput({ ...input, [target.name]: target.value })
             }
+            InputProps={{
+              disableUnderline: true,
+              startAdornment: <LockOutlined />,
+            }}
           />
           <ButtonSubmitting
             submitting={submitting}

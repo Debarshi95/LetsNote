@@ -2,13 +2,16 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: #f7f7f7;
 }
 .app__root a {
   text-decoration: none;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .error {
-  color: rgb(214, 29, 29);
+  color: rgb(214, 29, 29) !important;
   font-weight: bold;
+  margin: 1rem 0;
 }

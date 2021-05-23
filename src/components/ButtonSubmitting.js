@@ -3,17 +3,18 @@ import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   btnSubmittingRoot: {
-    width: "100%",
-    padding: "8px 10px",
-    margin: "12px 0",
-    borderRadius: "4px",
+    width: "72%",
+    padding: "10px",
+    margin: "14px auto",
+    borderRadius: "30px",
     display: "flex",
     justifyContent: "center",
     border: 0,
+    backgroundColor: "#049d7c",
     fontFamily: "inherit",
 
     [theme.breakpoints.down("xs")]: {
-      padding: "12px",
+      padding: "14px",
     },
 
     "& > div": {
@@ -28,12 +29,11 @@ function ButtonSubmitting({ submitting, submit, disabled, btnText }) {
 
   return (
     <>
-      {submitting && (
+      {submitting ? (
         <div className={classes.btnSubmittingRoot}>
           <CircularProgress color="secondary" />
         </div>
-      )}
-      {!submitting && (
+      ) : (
         <Button
           variant="contained"
           disableElevation

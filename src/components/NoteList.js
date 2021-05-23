@@ -41,7 +41,7 @@ const useStyles = makeStyles(() => ({
     },
   },
   noNotes: {
-    height: "calc(100% - 90px)",
+    // height: "calc(100% - 90px)",
     padding: "1rem",
     display: "flex",
     justifyContent: "center",
@@ -53,7 +53,7 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-function NoteList({ setSelectedComponent }) {
+function NoteList({ setSelectedComponent, setSelectedNoteId }) {
   const classes = useStyles();
   const notes = useSelector(selectAllNotes);
   const { user } = useSelector(selectUser);
@@ -61,25 +61,28 @@ function NoteList({ setSelectedComponent }) {
   const { addToast } = useToasts();
 
   React.useEffect(() => {
-    dispatch(getAllNotesAsync(user.id, "notes"));
+    dispatch(getAllNotesAsync(user?.id, "notes"));
   }, [user.id, dispatch]);
 
   const moveToTrash = (noteId) => {
-    dispatch(moveNoteToTrashAsync(noteId, user.id));
+    dispatch(moveNoteToTrashAsync(noteId, user?.id));
     addToast("Moved to trash", {
       appearance: "success",
       autoDismiss: "true",
     });
   };
 
-  const handleEdit = (noteId) => setSelectedComponent("New Note", noteId);
+  const handleEdit = (noteId) => {
+    setSelectedComponent("New Note");
+    setSelectedNoteId(noteId);
+  };
 
   return (
     <div className={classes.notesListRoot}>
       <h2>Notes</h2>
       <div className={classes.notesHeader}>
         <h4>
-          {notes.length} {notes.length > 1 ? "Notes" : "Note"}
+          {notes.length} {notes.length === 1 ? "Note" : "Notes"}
         </h4>
       </div>
       <Divider />

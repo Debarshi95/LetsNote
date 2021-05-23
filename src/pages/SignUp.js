@@ -91,10 +91,6 @@ function SignUp() {
           input.password
         );
 
-        await newUser.user.updateProfile({
-          username: input.username,
-        });
-
         await dispatch(
           saveUserToDb({ user: newUser.user, username: input.username })
         );

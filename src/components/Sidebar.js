@@ -19,8 +19,8 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser } from "../features/userSlice";
 import { setNotesEmpty } from "../features/notesSlice";
+import { selectUser } from "../features/userSlice";
 import { auth } from "../firebase";
 
 const useStyles = makeStyles({
@@ -47,20 +47,20 @@ const listItems = [
   { icon: <DeleteSharp />, text: "Trash" },
 ];
 
-function Sidebar({ handleComponentSelection }) {
+function Sidebar({ setSelectedComponent }) {
   const [open, setOpen] = React.useState(false);
+  const { user } = useSelector(selectUser);
   const classes = useStyles();
   const sm = useMediaQuery("(max-width:600px)");
-  const { user } = useSelector(selectUser);
   const dispatch = useDispatch();
 
   const sideBarItems = (
     <>
       <ListItem className={classes.userInfo}>
         <ListItemIcon>
-          <Avatar>{user?.fullname?.split("")[0]}</Avatar>
+          <Avatar>{user?.username?.split("")[0]}</Avatar>
         </ListItemIcon>
-        <Typography variant="h6">{user?.fullname?.split(" ")[0]}</Typography>
+        <Typography variant="h6">{user?.username}</Typography>
       </ListItem>
       <Divider />
       {listItems.map((item) => (
@@ -68,7 +68,10 @@ function Sidebar({ handleComponentSelection }) {
           <Button
             fullWidth
             startIcon={item.icon}
-            onClick={() => handleComponentSelection(item.text)}
+            onClick={() => {
+              setSelectedComponent(item.text);
+              setOpen(false);
+            }}
             style={{
               color: `${sm ? "#000" : "#bdbdbd"}`,
               textTransform: "initial",
@@ -108,7 +111,7 @@ function Sidebar({ handleComponentSelection }) {
   );
   return (
     <>
-      {sm && (
+      {sm ? (
         <>
           <div>
             <IconButton onClick={() => setOpen(!open)}>
@@ -123,9 +126,9 @@ function Sidebar({ handleComponentSelection }) {
             {sideBarItems}
           </SwipeableDrawer>
         </>
+      ) : (
+        <div className={classes.sidebarRoot}>{sideBarItems}</div>
       )}
-
-      {!sm && <div className={classes.sidebarRoot}>{sideBarItems}</div>}
     </>
   );
 }

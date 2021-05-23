@@ -4,6 +4,8 @@ import Sidebar from "../components/Sidebar";
 import NewNote from "../components/NewNote";
 import NoteList from "../components/NoteList";
 import Trash from "../components/Trash";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserDataById, selectUser } from "../features/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,32 +20,33 @@ const useStyles = makeStyles((theme) => ({
 
 function Dashboard() {
   const classes = useStyles();
-
   const [selectedComponent, setSelectedComponent] = React.useState("Notes");
   const [selectedNoteId, setSelectedNoteId] = React.useState(null);
-
-  const handleComponentSelection = (item, noteId) => {
-    if (noteId) {
-      setSelectedNoteId(noteId);
-    } else {
-      setSelectedNoteId(null);
-    }
-    setSelectedComponent(item);
-  };
+  const { user } = useSelector(selectUser);
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(getUserDataById(user.uid));
+  }, [user.uid, dispatch]);
 
   return (
     <div className={classes.root}>
-      <Sidebar handleComponentSelection={handleComponentSelection} />
+      <Sidebar setSelectedComponent={setSelectedComponent} />
 
       <>
         {selectedComponent === "Notes" && (
-          <NoteList setSelectedComponent={handleComponentSelection} />
+          <NoteList
+            setSelectedComponent={setSelectedComponent}
+            setSelectedNoteId={setSelectedNoteId}
+          />
         )}
         {selectedComponent === "New Note" && (
           <NewNote noteId={selectedNoteId} />
         )}
         {selectedComponent === "Trash" && (
-          <Trash setSelectedComponent={handleComponentSelection} />
+          <Trash
+            setSelectedComponent={setSelectedComponent}
+            setSelectedNoteId={setSelectedNoteId}
+          />
         )}
       </>
     </div>

@@ -53,7 +53,7 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-function Trash({ setSelectedComponent }) {
+function Trash({ setSelectedComponent, setSelectedNoteId }) {
   const classes = useStyles();
   const notes = useSelector(selectAllNotes);
   const { user } = useSelector(selectUser);
@@ -61,21 +61,21 @@ function Trash({ setSelectedComponent }) {
   const { addToast } = useToasts();
 
   const deleteTrash = (noteId) => {
-    dispatch(deleteNoteAsync(noteId, user.id)).then((data) =>
-      console.log(data)
-    );
+    dispatch(deleteNoteAsync(noteId, user.id));
     addToast("Note deleted successfully!!", {
       appearance: "success",
       autoDismiss: "true",
     });
   };
 
-  const handleEdit = (noteId) => setSelectedComponent("New Note", noteId);
+  const handleEdit = (noteId) => {
+    setSelectedComponent("New Note");
+    setSelectedNoteId(noteId);
+  };
 
   React.useEffect(() => {
-    dispatch(getAllNotesAsync(user.id, "trash"));
-    console.log("useEfect called");
-  }, [user.id, dispatch]);
+    dispatch(getAllNotesAsync(user?.id, "trash"));
+  }, [user?.id, dispatch]);
 
   return (
     <div className={classes.trashRoot}>

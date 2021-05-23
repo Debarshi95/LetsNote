@@ -3,21 +3,18 @@ import { firestore, timeStamp } from "../firebase";
 
 export const getAllNotesAsync = (userId, type) => {
   return async (dispatch) => {
-    let query;
+    let getTrashNotes = false;
     if (type === "notes") {
-      query = firestore
-        .collection("notes")
-        .where("moveToTrash", "==", false)
-        .where("user", "==", firestore.collection("users").doc(userId))
-        .orderBy("lastEdited", "desc");
+      getTrashNotes = false;
     } else {
-      query = firestore
-        .collection("notes")
-        .where("moveToTrash", "==", true)
-        .where("user", "==", firestore.collection("users").doc(userId))
-        .orderBy("lastEdited", "desc");
+      getTrashNotes = true;
     }
-    const res = await query.get();
+    const res = await firestore
+      .collection("notes")
+      .where("moveToTrash", "==", getTrashNotes)
+      .where("user", "==", firestore.collection("users").doc(userId))
+      .orderBy("lastEdited", "desc")
+      .get();
     const docs = res.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     dispatch(setNotes({ docs }));
   };

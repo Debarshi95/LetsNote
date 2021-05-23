@@ -5,7 +5,6 @@ import { Link, useHistory } from "react-router-dom";
 import * as ROUTES from "../constant/routes";
 import { auth } from "../firebase";
 import { EmailOutlined, LockOutlined } from "@material-ui/icons";
-import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   signInRoot: {
@@ -59,7 +58,6 @@ function SignIn() {
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState("");
   const history = useHistory();
-  const dispatch = useDispatch();
 
   const setSignIn = async (e) => {
     e.preventDefault();

@@ -54,10 +54,10 @@ function NewNote({ noteId }) {
   const [text, setText] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [error, setError] = React.useState("");
-  const { user } = useSelector(selectUser);
   const editorRef = React.useRef();
   const newNoteId = React.useRef();
   const { addToast } = useToasts();
+  const { user } = useSelector(selectUser);
   const selectedNote = useSelector((state) =>
     state.notes.notes.find((note) => note.id === noteId)
   );
@@ -75,18 +75,18 @@ function NewNote({ noteId }) {
     } else {
       setText("");
       setTitle("");
-      dispatch(createNoteAsync({ title, content: text, userId: user.id })).then(
-        (id) => {
-          newNoteId.current = id;
-          addToast("Empty note created successfully!!", {
-            appearance: "success",
-            autoDismiss: true,
-          });
-        }
-      );
+      dispatch(
+        createNoteAsync({ title, content: text, userId: user?.id })
+      ).then((id) => {
+        newNoteId.current = id;
+        addToast("Empty note created successfully!!", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.id, dispatch, selectedNote]);
+  }, [user?.id, dispatch, selectedNote]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateDocument = React.useCallback(

@@ -15,15 +15,21 @@ export const saveUserToDb = createAsyncThunk(
   }
 );
 
-export const getUserDataById = createAsyncThunk("user/getUser", async (uid) => {
-  const res = await firestore.collection("users").where("uid", "==", uid).get();
+export const getUserDataById = createAsyncThunk(
+  "user/getUser",
+  async (uid, { dispatch }) => {
+    const res = await firestore
+      .collection("users")
+      .where("uid", "==", uid)
+      .get();
 
-  if (!res.docs.length > 0) {
-    throw Error("User does not exist. Please sign up first");
+    if (!res.docs.length > 0) {
+      throw Error("User does not exist. Please sign up first");
+    }
+    const user = { id: res.docs[0].id, ...res.docs[0].data() };
+    dispatch(setUser(user));
   }
-
-  return { id: res.docs[0].id, ...res.docs[0].data() };
-});
+);
 
 export const checkIfUserNameTaken = (username) => {
   return async () => {

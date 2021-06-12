@@ -1,18 +1,17 @@
 import { CircularProgress } from "@material-ui/core";
 import React, { Suspense } from "react";
-import { useSelector } from "react-redux";
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
 import * as ROUTES from "./constant/routes";
-import { selectUser } from "./features/userSlice";
 
 const LazyHome = React.lazy(() => import("./pages/Home"));
 const LazySignIn = React.lazy(() => import("./pages/SignIn"));
 const LazySignUp = React.lazy(() => import("./pages/SignUp"));
-const LazyDashboard = React.lazy(() => import("./pages/Dashboard"));
+const LazyNewNote = React.lazy(() => import("./pages/NewNote"));
+const LazyNoteList = React.lazy(() => import("./pages/NoteList"));
+const LazyTrash = React.lazy(() => import("./pages/Trash"));
 
 function MainRouter() {
-  const { user } = useSelector(selectUser);
-
   return (
     <BrowserRouter>
       <Suspense
@@ -30,15 +29,12 @@ function MainRouter() {
         }
       >
         <Switch>
+          <PrivateRoute path={ROUTES.NOTES} component={LazyNoteList} />
+          <PrivateRoute path={ROUTES.CREATENOTE} component={LazyNewNote} />
+          <PrivateRoute path={ROUTES.TRASH} component={LazyTrash} />
           <Route exact path={ROUTES.HOME} component={LazyHome} />
           <Route path={ROUTES.SIGN_IN} component={LazySignIn} />
           <Route path={ROUTES.SIGN_UP} component={LazySignUp} />
-          <Route
-            path={ROUTES.DASHBOARD}
-            render={() =>
-              user ? <LazyDashboard /> : <Redirect to={ROUTES.HOME} />
-            }
-          />
         </Switch>
       </Suspense>
     </BrowserRouter>

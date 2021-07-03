@@ -4,30 +4,29 @@ import { firestore } from "../firebase";
 export const saveUserToDb = createAsyncThunk(
   "user/saveUser",
   async ({ user, username }) => {
-    const res = await firestore.collection("users").add({
+    const res = await firestore.collection("users").doc(user.uid).set({
       uid: user.uid,
       email: user.email,
       username: username,
       photoURL: user.photoURL,
       refreshToken: user.refreshToken,
     });
+
     return res;
   }
 );
 
 export const getUserDataById = createAsyncThunk(
   "user/getUser",
-  async (uid, { dispatch }) => {
-    const res = await firestore
-      .collection("users")
-      .where("uid", "==", uid)
-      .get();
+  async (uid, { dispatch, getState }) => {
+    const user = getState().user?.user;
 
-    if (!res.docs.length > 0) {
-      throw Error("User does not exist. Please sign up first");
+    if (!user?.id) {
+      const res = await firestore.collection("users").doc(uid).get();
+
+      const userData = { id: res.id, ...user, ...res.data() };
+      dispatch(setUser(userData));
     }
-    const user = { id: res.docs[0].id, ...res.docs[0].data() };
-    dispatch(setUser(user));
   }
 );
 

@@ -7,10 +7,9 @@ import {
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { selectUser } from "../features/userSlice";
+
 import * as ROUTES from "../constant/routes";
 import { Close, Menu } from "@material-ui/icons";
-import { auth } from "../firebase";
 
 const useStyles = makeStyles((theme) => ({
   navbarRoot: {

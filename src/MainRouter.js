@@ -1,37 +1,26 @@
-import { CircularProgress } from "@material-ui/core";
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Loader from "./components/Loader";
 import PrivateRoute from "./components/PrivateRoute";
 import * as ROUTES from "./constant/routes";
+import CreateNote from "./pages/CreateNote";
+import Trash from "./pages/Trash";
+import Notes from "./pages/NoteList";
+import EditNote from "./pages/CreateNote";
 
 const LazyHome = React.lazy(() => import("./pages/Home"));
 const LazySignIn = React.lazy(() => import("./pages/SignIn"));
 const LazySignUp = React.lazy(() => import("./pages/SignUp"));
-const LazyNewNote = React.lazy(() => import("./pages/NewNote"));
-const LazyNoteList = React.lazy(() => import("./pages/NoteList"));
-const LazyTrash = React.lazy(() => import("./pages/Trash"));
 
 function MainRouter() {
   return (
     <BrowserRouter>
-      <Suspense
-        fallback={
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flex: 1,
-            }}
-          >
-            <CircularProgress color="primary" />
-          </div>
-        }
-      >
+      <Suspense fallback={<Loader />}>
         <Switch>
-          <PrivateRoute path={ROUTES.NOTES} component={LazyNoteList} />
-          <PrivateRoute path={ROUTES.CREATENOTE} component={LazyNewNote} />
-          <PrivateRoute path={ROUTES.TRASH} component={LazyTrash} />
+          <PrivateRoute path={ROUTES.NOTES} component={Notes} />
+          <PrivateRoute path={ROUTES.CREATE_NOTE} component={CreateNote} />
+          <PrivateRoute path={ROUTES.TRASH} component={Trash} />
+          <PrivateRoute path={ROUTES.EDIT_NOTE} component={EditNote} />
           <Route exact path={ROUTES.HOME} component={LazyHome} />
           <Route path={ROUTES.SIGN_IN} component={LazySignIn} />
           <Route path={ROUTES.SIGN_UP} component={LazySignUp} />

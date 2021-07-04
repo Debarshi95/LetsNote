@@ -8,17 +8,23 @@ import { ToastProvider } from "react-toast-notifications";
 
 function App() {
   const dispatch = useDispatch();
-
   React.useEffect(() => {
     const unsub = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        console.log("app js called");
-        dispatch(setUser(authUser));
+        dispatch(
+          setUser({
+            uid: authUser.uid,
+            email: authUser.email,
+            displayName: authUser.displayName,
+            refreshToken: authUser.refreshToken,
+            photoURL: authUser.photoURL,
+          })
+        );
       } else {
         dispatch(setUser(null));
       }
     });
-    return () => unsub();
+    return unsub;
   }, [dispatch]);
 
   return (

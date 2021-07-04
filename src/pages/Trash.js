@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider, makeStyles, Typography, Box } from "@material-ui/core";
+import { Box, Divider, makeStyles, Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllNotesAsync } from "../features/notesSlice";
 import Sidebar from "../components/Sidebar";
@@ -18,11 +18,10 @@ const useStyles = makeStyles((theme) => ({
   notesContainer: {
     padding: "1rem",
     flex: 1,
-    [theme.breakpoints.down("xs")]: {
-      padding: "0 1rem",
-    },
   },
-
+  header: {
+    margin: "10px 0",
+  },
   title: {
     fontFamily: "inherit",
     fontSize: "1.8rem",
@@ -40,15 +39,15 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-function NoteList() {
+function Trash() {
   const classes = useStyles();
   const { notes, loading } = useSelector((state) => state.notes);
-  const { user } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(getAllNotesAsync({ type: "GET_NOTES" }));
-  }, [user.uid, dispatch]);
+    dispatch(getAllNotesAsync({ type: "GET_TRASH" }));
+  }, [dispatch]);
 
   return (
     <section className={classes.root}>
@@ -58,17 +57,16 @@ function NoteList() {
       ) : notes?.length > 0 ? (
         <Box className={classes.notesContainer}>
           <Typography variant="h4" component="h3" className={classes.title}>
-            Notes
+            Trash
           </Typography>
 
           <Typography variant="h6" component="h6" className={classes.subTitle}>
             {notes.length} {notes.length === 1 ? "Note" : "Notes"}
           </Typography>
-
           <Divider />
-          <Box display="flex" flexDirection="column" margin={"0.6rem 0"}>
+          <Box display="flex" flexDirection="column">
             {notes.map((note) => (
-              <NoteCard key={note.id} note={note} type="notes" />
+              <NoteCard key={note.id} note={note} type="trash" />
             ))}
           </Box>
         </Box>
@@ -79,10 +77,10 @@ function NoteList() {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography variant="h4">No notes</Typography>
+          <Typography variant="h4">Trash empty</Typography>
         </Box>
       )}
     </section>
   );
 }
-export default NoteList;
+export default Trash;

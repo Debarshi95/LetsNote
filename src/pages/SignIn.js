@@ -64,11 +64,8 @@ function SignIn() {
     setSubmitting(true);
 
     try {
-      const res = await auth.signInWithEmailAndPassword(
-        input.email,
-        input.password
-      );
-      history.push(`/${res.user.uid}/dashboard`);
+      await auth.signInWithEmailAndPassword(input.email, input.password);
+      history.push(`/notes`);
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -82,12 +79,6 @@ function SignIn() {
 
   return (
     <div className={classes.signInRoot}>
-      {/* <IconButton
-        className={classes.buttonBack}
-        onClick={() => history.goBack()}
-      >
-        <ArrowBackSharp />
-      </IconButton> */}
       <div className={classes.signInCard}>
         <h1>Sign In</h1>
         <h4>Sign in to continue</h4>

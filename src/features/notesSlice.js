@@ -26,12 +26,12 @@ export const getAllNotesAsync = createAsyncThunk(
 
 export const createNoteAsync = createAsyncThunk(
   "notes/createNote",
-  async ({ title, content }) => {
-    const { uid } = auth?.currentUser;
+  async () => {
+    const uid = auth?.currentUser?.uid;
 
     const doc = await firestore.collection("notes").add({
-      title: title || "Empty note",
-      content: content,
+      title: "Empty note",
+      content: "",
       user: firestore.collection("users").doc(uid),
       moveToTrash: false,
       lastEdited: timeStamp(),
@@ -65,7 +65,7 @@ export const updateNoteAsync = createAsyncThunk(
 export const deleteNoteAsync = (noteId) => {
   return async (dispatch) => {
     await firestore.collection("notes").doc(noteId).delete();
-    dispatch(getAllNotesAsync());
+    dispatch(getAllNotesAsync({ type: "GET_TRASH" }));
   };
 };
 const notesSlice = createSlice({

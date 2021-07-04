@@ -15,3 +15,9 @@
   font-weight: bold;
   margin: 1rem 0;
 }
+
+/* @media only screen and (min-width: 600px) {
+  .app__root {
+    flex-direction: row;
+  }
+} */

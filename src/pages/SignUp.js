@@ -95,7 +95,7 @@ function SignUp() {
           saveUserToDb({ user: newUser.user, username: input.username })
         );
 
-        history.push(`/${newUser.user.uid}/dashboard`);
+        history.push(`/notes`);
       }
     } catch (err) {
       // console.log(err);

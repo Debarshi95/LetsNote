@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { selectUser } from "../features/userSlice";
 import * as ROUTES from "../constant/routes";
 import { Close, Menu } from "@material-ui/icons";
+import { auth } from "../firebase";
 
 const useStyles = makeStyles((theme) => ({
   navbarRoot: {
@@ -71,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Navbar() {
   const xs = useMediaQuery("(max-width:600px)");
-  const { user } = useSelector(selectUser);
+  const { user } = useSelector((state) => state.user);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const classes = useStyles({ drawerOpen });
   const links = (
@@ -82,8 +83,8 @@ function Navbar() {
 
       {user && (
         <div className="userLinks">
-          <Link to={`/${user.uid}/dashboard`} className={classes.navLinks}>
-            Dashboard
+          <Link to={`/notes`} className={classes.navLinks}>
+            Notes
           </Link>
         </div>
       )}

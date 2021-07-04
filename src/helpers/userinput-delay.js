@@ -1,11 +1,14 @@
 const debounceTextInput = (cb, delay) => {
   let timer;
 
-  return (...args) => {
+  return function (...args) {
+    const ctx = this;
     if (timer) {
       clearTimeout(timer);
+      
     }
-    timer = setTimeout(() => cb.apply(this, ...args), delay);
+
+    timer = setTimeout(() => cb.apply(ctx, [...args]), delay);
   };
 };
 

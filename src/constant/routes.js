@@ -1,7 +1,9 @@
 const HOME = "/";
 const SIGN_IN = "/signin";
 const SIGN_UP = "/signup";
-const DASHBOARD = "/:userId/dashboard";
+const NOTES = "/notes";
 // const NOTEBOOKS = "/:userId/notebooks";
-
-export { HOME, SIGN_IN, SIGN_UP, DASHBOARD };
+const CREATE_NOTE = "/create";
+const TRASH = "/trash";
+const EDIT_NOTE = "/edit/:noteId";
+export { HOME, SIGN_IN, SIGN_UP, NOTES, CREATE_NOTE, TRASH, EDIT_NOTE };

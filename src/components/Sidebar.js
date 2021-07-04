@@ -20,8 +20,10 @@ import {
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotesEmpty } from "../features/notesSlice";
-import { selectUser } from "../features/userSlice";
+import { getUserDataById } from "../features/userSlice";
 import { auth } from "../firebase";
+import { NavLink } from "react-router-dom";
+import * as ROUTES from "../constant/routes";
 
 const useStyles = makeStyles({
   sidebarRoot: {
@@ -39,20 +41,27 @@ const useStyles = makeStyles({
       color: "#bdbdbd",
     },
   },
+  active: {
+    backgroundColor: "red",
+  },
 });
 
 const listItems = [
-  { icon: <AddRounded />, text: "New Note" },
-  { icon: <NotesSharp />, text: "Notes" },
-  { icon: <DeleteSharp />, text: "Trash" },
+  { icon: <AddRounded />, to: ROUTES.CREATE_NOTE, text: "New Note" },
+  { icon: <NotesSharp />, to: ROUTES.NOTES, text: "Notes" },
+  { icon: <DeleteSharp />, to: ROUTES.TRASH, text: "Trash" },
 ];
 
-function Sidebar({ setSelectedComponent }) {
+function Sidebar() {
   const [open, setOpen] = React.useState(false);
-  const { user } = useSelector(selectUser);
   const classes = useStyles();
   const sm = useMediaQuery("(max-width:600px)");
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+
+  React.useEffect(() => {
+    dispatch(getUserDataById(user.uid)).catch((err) => console.log(err));
+  }, [user.uid, dispatch]);
 
   const sideBarItems = (
     <>
@@ -65,25 +74,27 @@ function Sidebar({ setSelectedComponent }) {
       <Divider />
       {listItems.map((item) => (
         <ListItem key={item.text}>
-          <Button
-            fullWidth
-            startIcon={item.icon}
-            onClick={() => {
-              setSelectedComponent(item.text);
-              setOpen(false);
-            }}
-            style={{
-              color: `${sm ? "#000" : "#bdbdbd"}`,
-              textTransform: "initial",
-              display: "flex",
-              justifyContent: "start",
-              fontSize: "16px",
-              fontFamily: "inherit",
-              fontWeight: "bold",
-            }}
+          <NavLink
+            to={item.to}
+            style={{ display: "contents", textDecoration: "none" }}
+            activeClassName={classes.active}
           >
-            {item.text}
-          </Button>
+            <Button
+              fullWidth
+              startIcon={item.icon}
+              style={{
+                color: `${sm ? "#000" : "#bdbdbd"}`,
+                textTransform: "initial",
+                display: "flex",
+                justifyContent: "start",
+                fontSize: "16px",
+                fontFamily: "inherit",
+                fontWeight: "bold",
+              }}
+            >
+              {item.text}
+            </Button>
+          </NavLink>
         </ListItem>
       ))}
       <ListItem>

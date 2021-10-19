@@ -1,58 +1,54 @@
-import { makeStyles, TextField } from "@material-ui/core";
-import React from "react";
-import ButtonSubmitting from "../components/ButtonSubmitting";
-import { Link, useHistory } from "react-router-dom";
-import * as ROUTES from "../constant/routes";
-import { auth } from "../firebase";
-import { checkIfUserNameTaken, saveUserToDb } from "../features/userSlice";
-import { useDispatch } from "react-redux";
-import {
-  PersonOutlineOutlined,
-  EmailOutlined,
-  LockOutlined,
-} from "@material-ui/icons";
+import { makeStyles, TextField } from '@material-ui/core';
+import React from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { PersonOutlineOutlined, EmailOutlined, LockOutlined } from '@material-ui/icons';
+import ButtonSubmitting from '../components/ButtonSubmitting';
+import * as ROUTES from '../constant/routes';
+import { auth } from '../firebase';
+import { checkIfUserNameTaken, saveUserToDb } from '../features/userSlice';
 
 const useStyles = makeStyles((theme) => ({
   signUpRoot: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
     flex: 1,
-    [theme.breakpoints.down("xs")]: {
-      alignItems: "initial",
+    [theme.breakpoints.down('xs')]: {
+      alignItems: 'initial',
     },
   },
   signUpCard: {
-    width: "440px",
-    margin: "1rem auto",
-    padding: "2rem 4rem",
-    background: "#fff",
-    borderRadius: "4px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    [theme.breakpoints.down("xs")]: {
-      width: "100%",
-      padding: "2rem 3rem",
+    width: '440px',
+    margin: '1rem auto',
+    padding: '2rem 4rem',
+    background: '#fff',
+    borderRadius: '4px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      padding: '2rem 3rem',
       margin: 0,
     },
 
-    "& > h1, h4": {
-      textAlign: "center",
+    '& > h1, h4': {
+      textAlign: 'center',
       color: theme.palette.primary.main,
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
-    "& > h4": {
-      margin: "0 0 22px 0",
+    '& > h4': {
+      margin: '0 0 22px 0',
     },
-    "& > p": {
-      textAlign: "center",
+    '& > p': {
+      textAlign: 'center',
     },
 
-    "& > form": {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
+    '& > form': {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
     },
   },
 }));
@@ -61,12 +57,12 @@ function SignUp() {
   const classes = useStyles();
 
   const [input, setInput] = React.useState({
-    username: "",
-    email: "",
-    password: "",
+    username: '',
+    email: '',
+    password: '',
   });
   const [submitting, setSubmitting] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState('');
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -74,26 +70,19 @@ function SignUp() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const usernameTaken = await dispatch(
-        checkIfUserNameTaken(input.username)
-      );
+      const usernameTaken = await dispatch(checkIfUserNameTaken(input.username));
       // console.log(usernameTaken);
       if (usernameTaken) {
         setSubmitting(false);
         setInput({
           ...input,
-          password: "",
+          password: '',
         });
-        setError("Username taken. Please try another one.");
+        setError('Username taken. Please try another one.');
       } else {
-        const newUser = await auth.createUserWithEmailAndPassword(
-          input.email,
-          input.password
-        );
+        const newUser = await auth.createUserWithEmailAndPassword(input.email, input.password);
 
-        await dispatch(
-          saveUserToDb({ user: newUser.user, username: input.username })
-        );
+        await dispatch(saveUserToDb({ user: newUser.user, username: input.username }));
 
         history.push(`/notes`);
       }
@@ -102,7 +91,7 @@ function SignUp() {
       setSubmitting(false);
       setInput({
         ...input,
-        password: "",
+        password: '',
       });
       setError(err.message);
     }
@@ -128,9 +117,7 @@ function SignUp() {
             placeholder="Username"
             aria-label="Username"
             value={input.username}
-            onChange={({ target }) =>
-              setInput({ ...input, [target.name]: target.value })
-            }
+            onChange={({ target }) => setInput({ ...input, [target.name]: target.value })}
             InputProps={{
               disableUnderline: true,
               startAdornment: <PersonOutlineOutlined />,
@@ -143,9 +130,7 @@ function SignUp() {
             placeholder="Email"
             aria-label="Email"
             value={input.email}
-            onChange={({ target }) =>
-              setInput({ ...input, [target.name]: target.value })
-            }
+            onChange={({ target }) => setInput({ ...input, [target.name]: target.value })}
             InputProps={{
               disableUnderline: true,
               startAdornment: <EmailOutlined />,
@@ -158,9 +143,7 @@ function SignUp() {
             placeholder="Password"
             aria-label="Password"
             value={input.password}
-            onChange={({ target }) =>
-              setInput({ ...input, [target.name]: target.value })
-            }
+            onChange={({ target }) => setInput({ ...input, [target.name]: target.value })}
             InputProps={{
               disableUnderline: true,
               startAdornment: <LockOutlined />,
@@ -170,10 +153,10 @@ function SignUp() {
             submitting={submitting}
             submit={setSignUp}
             disabled={
-              input.fullname === "" ||
-              input.username === "" ||
-              input.email === "" ||
-              input.password === ""
+              input.fullname === '' ||
+              input.username === '' ||
+              input.email === '' ||
+              input.password === ''
             }
             btnText="Sign up"
           />

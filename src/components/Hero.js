@@ -1,64 +1,59 @@
-import {
-  ListItem,
-  ListItemIcon,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import { FiberManualRecord } from "@material-ui/icons";
-import React from "react";
-import { Link } from "react-router-dom";
-import * as ROUTES from "../constant/routes";
+import { ListItem, ListItemIcon, makeStyles, Typography } from '@material-ui/core';
+import { FiberManualRecord } from '@material-ui/icons';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import * as ROUTES from '../constant/routes';
 
 const useStyles = makeStyles((theme) => ({
   heroRoot: {
-    display: "flex",
-    width: "70%",
-    margin: "6rem auto",
-    [theme.breakpoints.down("md")]: {
-      width: "100%",
+    display: 'flex',
+    width: '70%',
+    margin: '6rem auto',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
     },
-    [theme.breakpoints.down("sm")]: {
-      flexDirection: "column-reverse",
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column-reverse',
     },
-    [theme.breakpoints.down("xs")]: {
-      margin: "3rem auto",
+    [theme.breakpoints.down('xs')]: {
+      margin: '3rem auto',
     },
   },
   hero: {
     flex: 1,
-    margin: "2rem 0",
-    display: "flex",
-    flexDirection: "column",
-    [theme.breakpoints.down("md")]: {
-      width: "100%",
-      alignItems: "center",
+    margin: '2rem 0',
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      alignItems: 'center',
     },
 
-    "& .MuiTypography-h2": {
-      fontFamily: "inherit",
-      [theme.breakpoints.down("xs")]: {
-        fontSize: "26px",
+    '& .MuiTypography-h2': {
+      fontFamily: 'inherit',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '26px',
       },
     },
-    "& a": {
+    '& a': {
       background: theme.palette.secondary.main,
-      padding: "14px 18px",
-      width: "190px",
-      borderRadius: "40px",
-      fontFamily: "inherit",
+      padding: '14px 18px',
+      width: '190px',
+      borderRadius: '40px',
+      fontFamily: 'inherit',
       fontWeight: 600,
-      display: "flex",
-      justifyContent: "center",
-      marginLeft: "1rem",
+      display: 'flex',
+      justifyContent: 'center',
+      marginLeft: '1rem',
     },
   },
   heroImg: {
     flex: 1,
-    width: "100%",
+    width: '100%',
   },
   heroNotes: {
-    margin: "2rem 0",
-    fontFamily: "inherit",
+    margin: '2rem 0',
+    fontFamily: 'inherit',
   },
 }));
 function Hero() {
@@ -97,11 +92,7 @@ function Hero() {
         </div>
         <Link to={ROUTES.SIGN_UP}>SIGN UP</Link>
       </div>
-      <img
-        src="/images/note_banner.jpg"
-        alt="hero"
-        className={classes.heroImg}
-      />
+      <img src="/images/note_banner.jpg" alt="hero" className={classes.heroImg} />
     </div>
   );
 }

@@ -1,66 +1,61 @@
-import {
-  Drawer,
-  IconButton,
-  makeStyles,
-  useMediaQuery,
-} from "@material-ui/core";
-import React from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Drawer, IconButton, makeStyles, useMediaQuery } from '@material-ui/core';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import * as ROUTES from "../constant/routes";
-import { Close, Menu } from "@material-ui/icons";
+import { Close, Menu } from '@material-ui/icons';
+import * as ROUTES from '../constant/routes';
 
 const useStyles = makeStyles((theme) => ({
   navbarRoot: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "1rem 5rem",
-    alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
-      padding: "1.25rem 2rem",
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '1rem 5rem',
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1.25rem 2rem',
     },
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down('xs')]: {
       padding: 0,
     },
-    "& .userLinks, .noUserLinks": {
-      display: "flex",
-      [theme.breakpoints.down("xs")]: {
-        flexDirection: "column",
+    '& .userLinks, .noUserLinks': {
+      display: 'flex',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
       },
     },
 
-    "& .noUserLinks > a:nth-last-child(1)": {
-      background: "transparent",
+    '& .noUserLinks > a:nth-last-child(1)': {
+      background: 'transparent',
       border: `2.5px solid ${theme.palette.background.paper}`,
-      marginLeft: "20px",
-      [theme.breakpoints.down("xs")]: {
+      marginLeft: '20px',
+      [theme.breakpoints.down('xs')]: {
         marginLeft: 0,
         border: 0,
-        paddingBottom: "20px",
+        paddingBottom: '20px',
       },
     },
 
-    "& .MuiDrawer-paper": {
-      width: "100vw",
-      position: "static",
+    '& .MuiDrawer-paper': {
+      width: '100vw',
+      position: 'static',
       padding: 0,
     },
-    "& .MuiDrawer-paperAnchorDockedTop": {
+    '& .MuiDrawer-paperAnchorDockedTop': {
       borderBottom: 0,
     },
   },
   navLinks: {
-    display: "block",
-    padding: "10px 24px",
-    color: "#fff",
-    fontSize: "17px",
-    fontFamily: "inherit",
-    fontWeight: "bold",
-    borderRadius: "40px",
-    [theme.breakpoints.down("xs")]: {
+    display: 'block',
+    padding: '10px 24px',
+    color: '#fff',
+    fontSize: '17px',
+    fontFamily: 'inherit',
+    fontWeight: 'bold',
+    borderRadius: '40px',
+    [theme.breakpoints.down('xs')]: {
       color: theme.palette.primary.main,
-      padding: "10px 16px",
+      padding: '10px 16px',
     },
   },
   drawer: {
@@ -70,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Navbar() {
-  const xs = useMediaQuery("(max-width:600px)");
+  const xs = useMediaQuery('(max-width:600px)');
   const { user } = useSelector((state) => state.user);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const classes = useStyles({ drawerOpen });
@@ -82,7 +77,7 @@ function Navbar() {
 
       {user && (
         <div className="userLinks">
-          <Link to={`/notes`} className={classes.navLinks}>
+          <Link to="/notes" className={classes.navLinks}>
             Notes
           </Link>
         </div>
@@ -108,7 +103,7 @@ function Navbar() {
           </IconButton>
           <Drawer
             variant="persistent"
-            anchor={"top"}
+            anchor="top"
             open={drawerOpen}
             onClose={() => setDrawerOpen(false)}
           >

@@ -9,53 +9,47 @@ import {
   SwipeableDrawer,
   Typography,
   useMediaQuery,
-} from "@material-ui/core";
-import {
-  AddRounded,
-  DeleteSharp,
-  NotesSharp,
-  Menu,
-  ExitToAppOutlined,
-} from "@material-ui/icons";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setNotesEmpty } from "../features/notesSlice";
-import { getUserDataById } from "../features/userSlice";
-import { auth } from "../firebase";
-import { NavLink } from "react-router-dom";
-import * as ROUTES from "../constant/routes";
+} from '@material-ui/core';
+import { AddRounded, DeleteSharp, NotesSharp, Menu, ExitToAppOutlined } from '@material-ui/icons';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import { setNotesEmpty } from '../features/notesSlice';
+import { getUserDataById } from '../features/userSlice';
+import { auth } from '../firebase';
+import * as ROUTES from '../constant/routes';
 
 const useStyles = makeStyles({
   sidebarRoot: {
-    width: "320px",
-    padding: "1.5rem 1rem",
-    display: "flex",
-    flexDirection: "column",
-    background: "#1a1a1a",
-    height: "100vh",
-    position: "sticky",
+    width: '320px',
+    padding: '1.5rem 1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    background: '#1a1a1a',
+    height: '100vh',
+    position: 'sticky',
     top: 0,
-    color: "#bdbdbd",
+    color: '#bdbdbd',
 
-    "& .MuiSvgIcon-root": {
-      color: "#bdbdbd",
+    '& .MuiSvgIcon-root': {
+      color: '#bdbdbd',
     },
   },
   active: {
-    backgroundColor: "red",
+    backgroundColor: 'red',
   },
 });
 
 const listItems = [
-  { icon: <AddRounded />, to: ROUTES.CREATE_NOTE, text: "New Note" },
-  { icon: <NotesSharp />, to: ROUTES.NOTES, text: "Notes" },
-  { icon: <DeleteSharp />, to: ROUTES.TRASH, text: "Trash" },
+  { icon: <AddRounded />, to: ROUTES.CREATE_NOTE, text: 'New Note' },
+  { icon: <NotesSharp />, to: ROUTES.NOTES, text: 'Notes' },
+  { icon: <DeleteSharp />, to: ROUTES.TRASH, text: 'Trash' },
 ];
 
 function Sidebar() {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
-  const sm = useMediaQuery("(max-width:600px)");
+  const sm = useMediaQuery('(max-width:600px)');
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
 
@@ -67,7 +61,7 @@ function Sidebar() {
     <>
       <ListItem className={classes.userInfo}>
         <ListItemIcon>
-          <Avatar>{user?.username?.split("")[0]}</Avatar>
+          <Avatar>{user?.username?.split('')[0]}</Avatar>
         </ListItemIcon>
         <Typography variant="h6">{user?.username}</Typography>
       </ListItem>
@@ -76,20 +70,20 @@ function Sidebar() {
         <ListItem key={item.text}>
           <NavLink
             to={item.to}
-            style={{ display: "contents", textDecoration: "none" }}
+            style={{ display: 'contents', textDecoration: 'none' }}
             activeClassName={classes.active}
           >
             <Button
               fullWidth
               startIcon={item.icon}
               style={{
-                color: `${sm ? "#000" : "#bdbdbd"}`,
-                textTransform: "initial",
-                display: "flex",
-                justifyContent: "start",
-                fontSize: "16px",
-                fontFamily: "inherit",
-                fontWeight: "bold",
+                color: `${sm ? '#000' : '#bdbdbd'}`,
+                textTransform: 'initial',
+                display: 'flex',
+                justifyContent: 'start',
+                fontSize: '16px',
+                fontFamily: 'inherit',
+                fontWeight: 'bold',
               }}
             >
               {item.text}
@@ -106,13 +100,13 @@ function Sidebar() {
           }}
           startIcon={<ExitToAppOutlined />}
           style={{
-            color: `${sm ? "#000" : "#bdbdbd"}`,
-            textTransform: "initial",
-            display: "flex",
-            justifyContent: "start",
-            fontSize: "16px",
-            fontFamily: "inherit",
-            fontWeight: "bold",
+            color: `${sm ? '#000' : '#bdbdbd'}`,
+            textTransform: 'initial',
+            display: 'flex',
+            justifyContent: 'start',
+            fontSize: '16px',
+            fontFamily: 'inherit',
+            fontWeight: 'bold',
           }}
         >
           Logout
@@ -129,11 +123,7 @@ function Sidebar() {
               <Menu />
             </IconButton>
           </div>
-          <SwipeableDrawer
-            open={open}
-            onOpen={() => setOpen(true)}
-            onClose={() => setOpen(false)}
-          >
+          <SwipeableDrawer open={open} onOpen={() => setOpen(true)} onClose={() => setOpen(false)}>
             {sideBarItems}
           </SwipeableDrawer>
         </>

@@ -1,59 +1,53 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { auth, firestore, timeStamp } from "../firebase";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { auth, firestore, timeStamp } from '../firebase';
 
-export const getAllNotesAsync = createAsyncThunk(
-  "notes/getAllNotes",
-  async ({ type }) => {
-    const uid = auth?.currentUser?.uid;
+export const getAllNotesAsync = createAsyncThunk('notes/getAllNotes', async ({ type }) => {
+  const uid = auth?.currentUser?.uid;
 
-    let includeTrashNotes = false;
-    if (type === "GET_NOTES") {
-      includeTrashNotes = false;
-    } else {
-      includeTrashNotes = true;
-    }
-    const res = await firestore
-      .collection("notes")
-      .where("moveToTrash", "==", includeTrashNotes)
-      .where("user", "==", firestore.collection("users").doc(uid))
-      .orderBy("lastEdited", "desc")
-      .get();
-    const docs = res.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-    return docs;
+  let includeTrashNotes = false;
+  if (type === 'GET_NOTES') {
+    includeTrashNotes = false;
+  } else {
+    includeTrashNotes = true;
   }
-);
+  const res = await firestore
+    .collection('notes')
+    .where('moveToTrash', '==', includeTrashNotes)
+    .where('user', '==', firestore.collection('users').doc(uid))
+    .orderBy('lastEdited', 'desc')
+    .get();
+  const docs = res.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-export const createNoteAsync = createAsyncThunk(
-  "notes/createNote",
-  async () => {
-    const uid = auth?.currentUser?.uid;
+  return docs;
+});
 
-    const doc = await firestore.collection("notes").add({
-      title: "Empty note",
-      content: "",
-      user: firestore.collection("users").doc(uid),
-      moveToTrash: false,
-      lastEdited: timeStamp(),
-      createdAt: timeStamp(),
-    });
+export const createNoteAsync = createAsyncThunk('notes/createNote', async () => {
+  const uid = auth?.currentUser?.uid;
 
-    return doc.id;
-  }
-);
+  const doc = await firestore.collection('notes').add({
+    title: 'Empty note',
+    content: '',
+    user: firestore.collection('users').doc(uid),
+    moveToTrash: false,
+    lastEdited: timeStamp(),
+    createdAt: timeStamp(),
+  });
+
+  return doc.id;
+});
 
 export const moveNoteToTrashAsync = (noteId) => async (dispatch) => {
-  await firestore.collection("notes").doc(noteId).update({
+  await firestore.collection('notes').doc(noteId).update({
     moveToTrash: true,
   });
 
-  dispatch(getAllNotesAsync({ type: "GET_NOTES" }));
+  dispatch(getAllNotesAsync({ type: 'GET_NOTES' }));
 };
 
 export const updateNoteAsync = createAsyncThunk(
-  "notes/updateNote",
+  'notes/updateNote',
   async ({ noteId, _text, _title }) => {
-    await firestore.collection("notes").doc(noteId).update({
+    await firestore.collection('notes').doc(noteId).update({
       title: _title,
       content: _text,
       moveToTrash: false,
@@ -62,14 +56,12 @@ export const updateNoteAsync = createAsyncThunk(
   }
 );
 
-export const deleteNoteAsync = (noteId) => {
-  return async (dispatch) => {
-    await firestore.collection("notes").doc(noteId).delete();
-    dispatch(getAllNotesAsync({ type: "GET_TRASH" }));
-  };
+export const deleteNoteAsync = (noteId) => async (dispatch) => {
+  await firestore.collection('notes').doc(noteId).delete();
+  dispatch(getAllNotesAsync({ type: 'GET_TRASH' }));
 };
 const notesSlice = createSlice({
-  name: "notes",
+  name: 'notes',
   initialState: {
     notes: [],
     loading: true,
@@ -80,9 +72,9 @@ const notesSlice = createSlice({
     },
   },
   extraReducers: {
-    [getAllNotesAsync.rejected]: (state, action) => {
-      // console.log(action);
-    },
+    // [getAllNotesAsync.rejected]: (state, action) => {
+    //   // console.log(action);
+    // },
     [getAllNotesAsync.pending]: (state) => {
       if (state.notes.length < 0) {
         state.loading = true;

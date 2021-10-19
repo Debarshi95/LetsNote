@@ -1,12 +1,12 @@
-import { makeStyles } from "@material-ui/core";
-import React from "react";
-import Hero from "../components/Hero";
-import Navbar from "../components/Navbar";
+import { makeStyles } from '@material-ui/core';
+import React from 'react';
+import Hero from '../components/Hero';
+import Navbar from '../components/Navbar';
 
 const useStyles = makeStyles((theme) => ({
   homeRoot: {
     background: theme.palette.primary.main,
-    minHeight: "100vh",
+    minHeight: '100vh',
   },
 }));
 function Home() {

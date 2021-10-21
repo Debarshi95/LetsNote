@@ -68,19 +68,19 @@ const notesSlice = createSlice({
   },
   reducers: {
     setNotesEmpty: (state) => {
+      console.log('setNoteEmpty Triggered');
       state.notes = [];
     },
   },
   extraReducers: {
-    // [getAllNotesAsync.rejected]: (state, action) => {
-    //   // console.log(action);
-    // },
     [getAllNotesAsync.pending]: (state) => {
+      console.log('getAllNotesAsync PendingTriggered');
       if (state.notes.length < 0) {
         state.loading = true;
       }
     },
     [getAllNotesAsync.fulfilled]: (state, action) => {
+      console.log('getAllNotesAsync Fullfiled Triggered');
       state.loading = false;
       state.notes = [...action.payload];
     },

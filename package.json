@@ -15,14 +15,32 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-toast-notifications": "^2.5.1",
+    "reselect": "^4.0.0",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
-    "lint": "eslint . --ignore-path .gitignore"
+    "lint": "eslint . --ignore-path .gitignore",
+    "lint:fix": "eslint --fix --ext .js,.jsx . --ignore-path .gitignore",
+    "prettier:fix": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
+    "prepare": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "yarn lint:fix"
+    ],
+    "**/*.{json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "browserslist": {
     "production": [
@@ -45,6 +63,8 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "7.21.5",
     "eslint-plugin-react-hooks": "4",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.2.3",
     "prettier": "2.4.1"
   }
 }

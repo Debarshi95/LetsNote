@@ -1,7 +1,8 @@
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core';
+
 import React from 'react';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: { primary: { main: '#06c59c' }, secondary: { main: '#f4f4f4' } },
   overrides: {
     MuiFilledInput: {

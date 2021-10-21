@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Divider, makeStyles, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllNotesAsync } from '../features/notesSlice';
-import Sidebar from '../components/Sidebar';
-import Loader from '../components/Loader';
-import NoteCard from '../components/NoteCard';
+import { getAllNotesAsync } from '../../features/notesSlice';
+import Sidebar from '../../components/Sidebar';
+import NoteCard from '../../components/NoteCard';
+import Await from '../../components/Await';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,11 +49,10 @@ function Trash() {
     dispatch(getAllNotesAsync({ type: 'GET_TRASH' }));
   }, [dispatch]);
 
-  if (loading) return <Loader />;
   return (
     <section className={classes.root}>
       <Sidebar />
-      {notes?.length > 0 ? (
+      <Await loading={loading} hasData={notes.length}>
         <Box className={classes.notesContainer}>
           <Typography variant="h4" component="h3" className={classes.title}>
             Trash
@@ -69,11 +68,7 @@ function Trash() {
             ))}
           </Box>
         </Box>
-      ) : (
-        <Box display="flex" flex={1} justifyContent="center" alignItems="center">
-          <Typography variant="h4">Trash empty</Typography>
-        </Box>
-      )}
+      </Await>
     </section>
   );
 }

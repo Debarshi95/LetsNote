@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { Close, Menu } from '@material-ui/icons';
-import * as ROUTES from '../constant/routes';
+import routes from '../../constant/routes';
 
 const useStyles = makeStyles((theme) => ({
   navbarRoot: {
@@ -71,23 +71,23 @@ function Navbar() {
   const classes = useStyles({ drawerOpen });
   const links = (
     <>
-      <Link to={ROUTES.HOME} className={classes.navLinks}>
+      <Link to={routes.home.route} className={classes.navLinks}>
         LetsNote
       </Link>
 
       {user && (
         <div className="userLinks">
-          <Link to="/notes" className={classes.navLinks}>
+          <Link to={routes.notes.route} className={classes.navLinks}>
             Notes
           </Link>
         </div>
       )}
       {!user && (
         <div className="noUserLinks">
-          <Link to={ROUTES.SIGN_IN} className={classes.navLinks}>
+          <Link to={routes.signIn.route} className={classes.navLinks}>
             SignIn
           </Link>
-          <Link to={ROUTES.SIGN_UP} className={classes.navLinks}>
+          <Link to={routes.signUp.route} className={classes.navLinks}>
             SignUp
           </Link>
         </div>

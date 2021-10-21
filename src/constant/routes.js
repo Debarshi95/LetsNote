@@ -1,9 +1,37 @@
-const HOME = '/';
-const SIGN_IN = '/signin';
-const SIGN_UP = '/signup';
-const NOTES = '/notes';
-// const NOTEBOOKS = "/:userId/notebooks";
-const CREATE_NOTE = '/create';
-const TRASH = '/trash';
-const EDIT_NOTE = '/edit/:noteId';
-export { HOME, SIGN_IN, SIGN_UP, NOTES, CREATE_NOTE, TRASH, EDIT_NOTE };
+export default {
+  home: {
+    route: '/',
+    exact: true,
+    protected: false,
+  },
+  signIn: {
+    route: '/signin',
+    exact: true,
+    protected: false,
+  },
+  signUp: {
+    route: '/signup',
+    exact: true,
+    protected: false,
+  },
+  notes: {
+    route: '/notes',
+    exact: true,
+    protected: true,
+  },
+  create: {
+    route: '/create',
+    exact: true,
+    protected: true,
+  },
+  trash: {
+    route: '/trash',
+    exact: true,
+    protected: true,
+  },
+  edit: {
+    route: '/edit/:noteId',
+    exact: true,
+    protected: true,
+  },
+};

@@ -1,10 +1,10 @@
 import React from 'react';
-import './App.css';
+import './index.css';
 import { useDispatch } from 'react-redux';
 import { ToastProvider } from 'react-toast-notifications';
-import { auth } from './firebase';
-import { setUser } from './features/userSlice';
-import MainRouter from './MainRouter';
+import { auth } from '../../firebase';
+import { setUser } from '../../features/userSlice';
+import MainRouter from '../MainRouter';
 
 function App() {
   const dispatch = useDispatch();

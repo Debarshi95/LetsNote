@@ -1,10 +1,11 @@
 import React from 'react';
 import { Divider, makeStyles, Typography, Box } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllNotesAsync } from '../features/notesSlice';
-import Sidebar from '../components/Sidebar';
-import Loader from '../components/Loader';
-import NoteCard from '../components/NoteCard';
+import { useDispatch, useSelector, connect } from 'react-redux';
+import { getAllNotesAsync } from '../../features/notesSlice';
+import Sidebar from '../../components/Sidebar';
+import NoteCard from '../../components/NoteCard';
+import Await from '../../components/Await';
+import { selectUser } from '../../features/userSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,21 +41,20 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-function NoteList() {
+function NoteList({ user }) {
   const classes = useStyles();
   const { notes, loading } = useSelector((state) => state.notes);
-  const { user } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     dispatch(getAllNotesAsync({ type: 'GET_NOTES' }));
-  }, [user.uid, dispatch]);
+  }, [user?.uid, dispatch]);
 
-  if (loading) return <Loader />;
   return (
     <section className={classes.root}>
       <Sidebar />
-      {notes?.length > 0 ? (
+      <Await isLoading={loading} hasData={notes.length}>
         <Box className={classes.notesContainer}>
           <Typography variant="h4" component="h3" className={classes.title}>
             Notes
@@ -71,12 +71,14 @@ function NoteList() {
             ))}
           </Box>
         </Box>
-      ) : (
-        <Box display="flex" flex={1} justifyContent="center" alignItems="center">
-          <Typography variant="h4">No notes</Typography>
-        </Box>
-      )}
+      </Await>
     </section>
   );
 }
-export default NoteList;
+const mapStateToProps = (state) => {
+  console.log('NotelIst called');
+  return {
+    user: selectUser(state),
+  };
+};
+export default connect(mapStateToProps)(NoteList);

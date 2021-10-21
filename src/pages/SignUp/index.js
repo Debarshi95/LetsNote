@@ -3,10 +3,10 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { PersonOutlineOutlined, EmailOutlined, LockOutlined } from '@material-ui/icons';
-import ButtonSubmitting from '../components/ButtonSubmitting';
-import * as ROUTES from '../constant/routes';
-import { auth } from '../firebase';
-import { checkIfUserNameTaken, saveUserToDb } from '../features/userSlice';
+import ButtonSubmitting from '../../components/ButtonSubmitting';
+import routes from '../../constant/routes';
+import { auth } from '../../firebase';
+import { checkIfUserNameTaken, saveUserToDb } from '../../features/userSlice';
 
 const useStyles = makeStyles((theme) => ({
   signUpRoot: {
@@ -163,7 +163,7 @@ function SignUp() {
         </form>
         {error && <p className="error"> {error}</p>}
         <p>
-          Have an account? <Link to={ROUTES.SIGN_IN}>Sign in</Link>
+          Have an account? <Link to={routes.signIn.route}>Sign in</Link>
         </p>
       </div>
     </div>

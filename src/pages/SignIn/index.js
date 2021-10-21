@@ -2,9 +2,9 @@ import { makeStyles, TextField } from '@material-ui/core';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { EmailOutlined, LockOutlined } from '@material-ui/icons';
-import ButtonSubmitting from '../components/ButtonSubmitting';
-import * as ROUTES from '../constant/routes';
-import { auth } from '../firebase';
+import ButtonSubmitting from '../../components/ButtonSubmitting';
+import routes from '../../constant/routes';
+import { auth } from '../../firebase';
 
 const useStyles = makeStyles((theme) => ({
   signInRoot: {
@@ -119,7 +119,7 @@ function SignIn() {
         </form>
         {error && <p className="error"> {error}</p>}
         <p>
-          Don&apos;t have an account? <Link to={ROUTES.SIGN_UP}>Sign up</Link>
+          Don&apos;t have an account? <Link to={routes.signUp.route}>Sign up</Link>
         </p>
       </div>
     </div>

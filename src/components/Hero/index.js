@@ -2,10 +2,10 @@ import { ListItem, ListItemIcon, makeStyles, Typography } from '@material-ui/cor
 import { FiberManualRecord } from '@material-ui/icons';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import * as ROUTES from '../constant/routes';
+import routes from '../../constant/routes';
 
 const useStyles = makeStyles((theme) => ({
-  heroRoot: {
+  root: {
     display: 'flex',
     width: '70%',
     margin: '6rem auto',
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 function Hero() {
   const classes = useStyles();
   return (
-    <div className={classes.heroRoot}>
+    <div className={classes.root}>
       <div className={classes.hero}>
         <Typography component="h2" variant="h2">
           LetsNote
@@ -90,7 +90,7 @@ function Hero() {
             </Typography>
           </ListItem>
         </div>
-        <Link to={ROUTES.SIGN_UP}>SIGN UP</Link>
+        <Link to={routes.signUp}>SIGN UP</Link>
       </div>
       <img src="/images/note_banner.jpg" alt="hero" className={classes.heroImg} />
     </div>

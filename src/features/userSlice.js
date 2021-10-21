@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { firestore } from '../firebase';
 
 export const saveUserToDb = createAsyncThunk('user/saveUser', async ({ user, username }) => {
@@ -29,18 +30,24 @@ export const getUserDataById = createAsyncThunk(
 );
 
 export const checkIfUserNameTaken = (username) => async () => {
-  const res = await firestore.collection('users').where('username', '==', username).get();
+  try {
+    const res = await firestore.collection('users').where('username', '==', username).get();
 
-  return res.docs.length > 0;
+    return res.docs.length > 0;
+  } catch (error) {
+    throw Error(error);
+  }
 };
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     user: null,
     loading: false,
+    error: null,
   },
   reducers: {
     setUser: (state, action) => {
+      console.log('setUser Triggered');
       state.user = action.payload;
     },
   },
@@ -48,5 +55,8 @@ const userSlice = createSlice({
 
 export const { setUser } = userSlice.actions;
 export default userSlice.reducer;
-
-export const selectUser = (state) => state.user;
+const selectDomain = (state) => state.user;
+export const selectUser = createSelector(selectDomain, (user) => {
+  console.log('Select User called');
+  return user;
+});

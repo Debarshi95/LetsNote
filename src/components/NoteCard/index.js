@@ -1,13 +1,14 @@
+/* eslint-disable react/no-danger */
 import { Box, makeStyles, Typography, IconButton } from '@material-ui/core';
 import { DeleteForeverOutlined, EditRounded, ClearRounded } from '@material-ui/icons';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
-import { deleteNoteAsync, moveNoteToTrashAsync } from '../features/notesSlice';
+import { deleteNoteAsync, moveNoteToTrashAsync } from '../../features/notesSlice';
 
 const useStyles = makeStyles(() => ({
-  note: {
+  root: {
     padding: '1rem',
     margin: '0.6rem 0',
     border: '1.8px solid #bdbdbd',
@@ -55,7 +56,7 @@ function NoteCard({ note, type }) {
   const editNote = (noteId) => history.push(`/edit/${noteId}`, { noteId });
 
   return (
-    <Box className={classes.note}>
+    <Box className={classes.root}>
       <Typography component="h5" variant="h5">
         {note.title}
       </Typography>

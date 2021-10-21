@@ -14,10 +14,10 @@ import { AddRounded, DeleteSharp, NotesSharp, Menu, ExitToAppOutlined } from '@m
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { setNotesEmpty } from '../features/notesSlice';
-import { getUserDataById } from '../features/userSlice';
-import { auth } from '../firebase';
-import * as ROUTES from '../constant/routes';
+import { setNotesEmpty } from '../../features/notesSlice';
+import { getUserDataById } from '../../features/userSlice';
+import { auth } from '../../firebase';
+import routes from '../../constant/routes';
 
 const useStyles = makeStyles({
   sidebarRoot: {
@@ -41,9 +41,9 @@ const useStyles = makeStyles({
 });
 
 const listItems = [
-  { icon: <AddRounded />, to: ROUTES.CREATE_NOTE, text: 'New Note' },
-  { icon: <NotesSharp />, to: ROUTES.NOTES, text: 'Notes' },
-  { icon: <DeleteSharp />, to: ROUTES.TRASH, text: 'Trash' },
+  { icon: <AddRounded />, to: routes.create.route, text: 'New Note' },
+  { icon: <NotesSharp />, to: routes.notes.route, text: 'Notes' },
+  { icon: <DeleteSharp />, to: routes.trash.route, text: 'Trash' },
 ];
 
 function Sidebar() {

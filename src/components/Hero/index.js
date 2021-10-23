@@ -1,45 +1,42 @@
-import { ListItem, ListItemIcon, makeStyles, Typography } from '@material-ui/core';
-import { FiberManualRecord } from '@material-ui/icons';
+import { makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../../constant/routes';
+import strings from '../../constant/strings';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    width: '70%',
-    margin: '6rem auto',
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
-    },
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column-reverse',
-    },
-    [theme.breakpoints.down('xs')]: {
-      margin: '3rem auto',
+    maxWidth: '100%',
+    margin: '2rem auto',
+    alignItems: 'center',
+    flexDirection: 'column-reverse',
+    [theme.breakpoints.up('md')]: {
+      maxWidth: '70%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      margin: 'auto',
+      height: 'calc(100vh - 8rem)',
     },
   },
   hero: {
-    flex: 1,
-    margin: '2rem 0',
     display: 'flex',
     flexDirection: 'column',
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
-      alignItems: 'center',
-    },
+    alignItems: 'center',
 
     '& .MuiTypography-h2': {
       fontFamily: 'inherit',
-      [theme.breakpoints.down('xs')]: {
-        fontSize: '26px',
+      fontSize: '2rem',
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '2.75rem',
       },
     },
     '& a': {
       background: theme.palette.secondary.main,
-      padding: '14px 18px',
-      width: '190px',
-      borderRadius: '40px',
+      padding: '0.8rem 1.2rem',
+      maxWidth: '12rem',
+      width: '100%',
+      borderRadius: '2.5rem',
       fontFamily: 'inherit',
       fontWeight: 600,
       display: 'flex',
@@ -48,12 +45,22 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   heroImg: {
-    flex: 1,
-    width: '100%',
+    maxWidth: '90%',
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: '60%',
+    },
   },
   heroNotes: {
     margin: '2rem 0',
     fontFamily: 'inherit',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    '& .MuiTypography-h5': {
+      fontFamily: 'inherit',
+      fontSize: '1.4rem',
+      margin: '0.4rem 0',
+    },
   },
 }));
 function Hero() {
@@ -62,35 +69,22 @@ function Hero() {
     <div className={classes.root}>
       <div className={classes.hero}>
         <Typography component="h2" variant="h2">
-          LetsNote
+          {strings.APP_NAME}
         </Typography>
         <div className={classes.heroNotes}>
-          <ListItem disableGutters>
-            <ListItemIcon>
-              <FiberManualRecord />
-            </ListItemIcon>
-            <Typography component="h5" variant="h5">
-              Work anywhere
-            </Typography>
-          </ListItem>
-          <ListItem disableGutters>
-            <ListItemIcon>
-              <FiberManualRecord />
-            </ListItemIcon>
-            <Typography component="h5" variant="h5">
-              Your notes, your way
-            </Typography>
-          </ListItem>
-          <ListItem disableGutters>
-            <ListItemIcon>
-              <FiberManualRecord />
-            </ListItemIcon>
-            <Typography component="h5" variant="h5">
-              Find things fast
-            </Typography>
-          </ListItem>
+          <Typography component="h5" variant="h5">
+            {strings.WORK_ANYWHERE}
+          </Typography>
+
+          <Typography component="h5" variant="h5">
+            {strings.YOUR_NOTES}
+          </Typography>
+
+          <Typography component="h5" variant="h5">
+            {strings.FIND_THINGS_FAST}
+          </Typography>
         </div>
-        <Link to={routes.signUp}>SIGN UP</Link>
+        <Link to={routes.signUp.route}>{strings.SIGN_UP}</Link>
       </div>
       <img src="/images/note_banner.jpg" alt="hero" className={classes.heroImg} />
     </div>

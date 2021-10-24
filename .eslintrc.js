@@ -24,7 +24,6 @@ module.exports = {
     'no-param-reassign': ['error', { props: true, ignorePropertyModificationsFor: ['state'] }],
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'prettier/prettier': 'error',
-    'no-console': 'warn',
     'import/no-extraneous-dependencies': [
       'error',
       { devDependencies: ['**/*.{js,jsx}', '**/*.test.{js,jsx}', '**/*.spec.{js,jsx}'] },

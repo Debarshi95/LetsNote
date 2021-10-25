@@ -1,23 +1,25 @@
 .app__root {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
   background-color: #f7f7f7;
 }
 .app__root a {
   text-decoration: none;
   cursor: pointer;
-  font-weight: bold;
-}
 
+}
+.app__root h5 , p {
+  font-family: inherit;
+
+}
 .error {
   color: rgb(214, 29, 29) !important;
   font-weight: bold;
   margin: 1rem 0;
 }
 
-/* @media only screen and (min-width: 600px) {
+@media only screen and (max-width: 600px) {
   .app__root {
-    flex-direction: row;
+    flex-direction: column;
   }
-} */
+}

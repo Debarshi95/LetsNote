@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
     '& .MuiTypography-h2': {
       fontFamily: 'inherit',
-      fontSize: '2rem',
+      fontSize: '1.7rem',
       [theme.breakpoints.up('sm')]: {
         fontSize: '2.75rem',
       },
@@ -58,8 +58,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     '& .MuiTypography-h5': {
       fontFamily: 'inherit',
-      fontSize: '1.4rem',
+      fontSize: '1.15rem',
       margin: '0.4rem 0',
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '1.25rem',
+      },
     },
   },
 }));

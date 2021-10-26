@@ -1,12 +1,18 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 import Loader from '../Loader';
-import PrivateRoute from '../PrivateRoute';
 import routeConfig from '../../utils/routeConfig';
+import PrivateRoute from '../PrivateRoute';
+import Sidebar from '../Sidebar';
+import routes from '../../constant/routes';
 
 function MainRouter() {
   return (
-    <BrowserRouter>
+    <Router>
+      <Route
+        path={[routes.notes.route, routes.create.route, routes.trash.route, routes.edit.route]}
+        component={Sidebar}
+      />
       <Suspense fallback={<Loader />}>
         <Switch>
           {Object.keys(routeConfig).map((key) => {
@@ -15,10 +21,10 @@ function MainRouter() {
             if (isProtected) {
               return (
                 <PrivateRoute
-                  key={key}
-                  path={routeConfig[key].route}
-                  exact={routeConfig[key].exact}
                   component={Component}
+                  key={key}
+                  exact={routeConfig[key].exact}
+                  path={routeConfig[key].route}
                 />
               );
             }
@@ -33,7 +39,7 @@ function MainRouter() {
           })}
         </Switch>
       </Suspense>
-    </BrowserRouter>
+    </Router>
   );
 }
 

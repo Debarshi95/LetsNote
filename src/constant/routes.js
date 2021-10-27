@@ -2,27 +2,24 @@ export default {
   home: {
     route: '/',
     exact: true,
-    protected: false,
   },
   signIn: {
     route: '/signin',
     exact: true,
-    protected: false,
   },
   signUp: {
     route: '/signup',
     exact: true,
-    protected: false,
   },
   notes: {
     route: '/notes',
-    exact: true,
     protected: true,
+    exact: true,
   },
   create: {
     route: '/create',
-    exact: true,
     protected: true,
+    exact: true,
   },
   trash: {
     route: '/trash',
@@ -31,7 +28,7 @@ export default {
   },
   edit: {
     route: '/edit/:noteId',
-    exact: true,
     protected: true,
+    exact: true,
   },
 };

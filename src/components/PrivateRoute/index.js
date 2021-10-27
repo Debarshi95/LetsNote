@@ -1,19 +1,19 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import routes from '../../constant/routes';
-import { selectUser } from '../../features/userSlice';
+import { useAuthContext } from '../../providers/AuthProvider';
 
-function PrivateRoute({ component: Component, user, ...rest }) {
+function PrivateRoute({ component: Component, ...rest }) {
+  const { isAuthenticated } = useAuthContext();
+
   return (
     <Route
       {...rest}
-      render={(props) => (user ? <Component {...props} /> : <Redirect to={routes.home.route} />)}
+      render={(props) => {
+        return isAuthenticated ? <Component {...props} /> : <Redirect to={routes.home.route} />;
+      }}
     />
   );
 }
-const mapStateToProps = (state) => {
-  console.log('MapStateToProps Called', { state });
-  return { user: selectUser(state) };
-};
-export default connect(mapStateToProps, null)(PrivateRoute);
+
+export default PrivateRoute;

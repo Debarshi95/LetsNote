@@ -1,34 +1,31 @@
 import { makeStyles, TextField } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { EmailOutlined, LockOutlined } from '@material-ui/icons';
 import ButtonSubmitting from '../../components/ButtonSubmitting';
 import routes from '../../constant/routes';
-import { auth } from '../../firebase';
+import strings from '../../constant/strings';
+import { signinWithCredentials } from '../../services';
 
 const useStyles = makeStyles((theme) => ({
-  signInRoot: {
-    width: '100%',
+  root: {
     display: 'flex',
-    alignItems: 'center',
     flex: 1,
-    [theme.breakpoints.down('xs')]: {
-      alignItems: 'initial',
+    [theme.breakpoints.up('sm')]: {
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   },
-  signInCard: {
-    width: '440px',
-    margin: '1rem auto',
-    padding: '2rem 4rem',
-    borderRadius: '4px',
+  cardWrapper: {
+    width: '100%',
+    padding: '2rem',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    background: '#fff',
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-      padding: '2rem 3rem',
-      margin: 0,
+    background: theme.palette.background.paper,
+    [theme.breakpoints.up('sm')]: {
+      width: '25rem',
+      borderRadius: '0.25rem',
     },
 
     '& > h1, h4': {
@@ -37,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 'bold',
     },
     '& > h4': {
-      margin: '0 0 22px 0',
+      margin: '0 0 1.25rem 0',
     },
     '& > p': {
       textAlign: 'center',
@@ -49,39 +46,43 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'center',
     },
   },
+  link: {
+    color: theme.palette.primary.main,
+  },
 }));
 
 function SignIn() {
   const classes = useStyles();
-
-  const [input, setInput] = React.useState({ email: '', password: '' });
-  const [submitting, setSubmitting] = React.useState(false);
-  const [error, setError] = React.useState('');
+  const [input, setInput] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const history = useHistory();
 
   const setSignIn = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
 
+    setSubmitting(true);
+    const { email, password } = input;
     try {
-      await auth.signInWithEmailAndPassword(input.email, input.password);
-      history.push(`/notes`);
+      const res = await signinWithCredentials(email, password);
+      if (res?.user) {
+        history.push(routes.notes.route);
+      }
     } catch (err) {
-      console.log(err);
+      setInput({
+        ...input,
+        password: '',
+      });
+      setError(err?.message || strings.SOMETHING_WENT_WRONG);
       setSubmitting(false);
-      setError(err.message);
     }
-    setInput({
-      ...input,
-      password: '',
-    });
   };
 
   return (
-    <div className={classes.signInRoot}>
-      <div className={classes.signInCard}>
-        <h1>Sign In</h1>
-        <h4>Sign in to continue</h4>
+    <div className={classes.root}>
+      <div className={classes.cardWrapper}>
+        <h1>{strings.SIGN_IN}</h1>
+        <h4>{strings.SIGN_IN_CONTINUE}</h4>
 
         <form autoComplete="off">
           <TextField
@@ -114,12 +115,15 @@ function SignIn() {
             submitting={submitting}
             submit={setSignIn}
             disabled={input.email === '' || input.password === ''}
-            btnText="Sign in"
+            btnText={strings.SIGN_IN}
           />
         </form>
-        {error && <p className="error"> {error}</p>}
+        {error && <p className="error">{error}</p>}
         <p>
-          Don&apos;t have an account? <Link to={routes.signUp.route}>Sign up</Link>
+          Don&apos;t have an account?{' '}
+          <Link to={routes.signUp.route} className={classes.link}>
+            {strings.SIGN_UP}
+          </Link>
         </p>
       </div>
     </div>

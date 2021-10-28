@@ -2,11 +2,11 @@ import { Button, CircularProgress, makeStyles } from '@material-ui/core';
 import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
-  btnSubmittingRoot: {
+  root: {
     width: '72%',
-    padding: '10px',
-    margin: '14px auto',
-    borderRadius: '30px',
+    padding: '0.7rem',
+    margin: '0.85rem auto',
+    borderRadius: '1.75rem',
     display: 'flex',
     justifyContent: 'center',
     border: 0,
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'inherit',
 
     [theme.breakpoints.down('xs')]: {
-      padding: '14px',
+      padding: '0.85rem',
     },
 
     '& > div': {
@@ -25,12 +25,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ButtonSubmitting({ submitting, submit, disabled, btnText }) {
-  const classes = useStyles({ disabled });
+  const classes = useStyles();
 
   return (
     <>
       {submitting ? (
-        <div className={classes.btnSubmittingRoot}>
+        <div className={classes.root}>
           <CircularProgress color="secondary" />
         </div>
       ) : (

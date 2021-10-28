@@ -1,137 +1,174 @@
 import {
-  Avatar,
-  Button,
-  Divider,
   IconButton,
   ListItem,
   ListItemIcon,
   makeStyles,
-  SwipeableDrawer,
+  ListItemText,
+  AppBar,
+  Toolbar,
+  Box,
+  Drawer,
+  Avatar,
   Typography,
+  Divider,
   useMediaQuery,
+  Button,
 } from '@material-ui/core';
-import { AddRounded, DeleteSharp, NotesSharp, Menu, ExitToAppOutlined } from '@material-ui/icons';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  AddOutlined,
+  BookOutlined,
+  DeleteOutlined,
+  Menu,
+  ExitToAppOutlined,
+} from '@material-ui/icons';
+import React, { useEffect, memo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { setNotesEmpty } from '../../features/notesSlice';
-import { getUserDataById } from '../../features/userSlice';
-import { auth } from '../../firebase';
-import routes from '../../constant/routes';
+import strings from '../../constant/strings';
+import { useAuthContext } from '../../providers/AuthProvider';
+import { getUserDataById } from '../../services';
 
-const useStyles = makeStyles({
-  sidebarRoot: {
-    width: '320px',
-    padding: '1.5rem 1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    background: '#1a1a1a',
-    height: '100vh',
-    position: 'sticky',
-    top: 0,
-    color: '#bdbdbd',
-
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: '#2D2D2D',
+    position: 'static',
     '& .MuiSvgIcon-root': {
-      color: '#bdbdbd',
+      color: theme.palette.background.paper,
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: '16rem',
+      position: 'sticky',
+      top: 0,
+      maxHeight: '100vh',
+      padding: '1rem 0',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '18rem',
     },
   },
-  active: {
-    backgroundColor: 'red',
+  appbar: {
+    backgroundColor: theme.palette.primary.contrastText,
+    position: 'static',
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
   },
-});
 
-const listItems = [
-  { icon: <AddRounded />, to: routes.create.route, text: 'New Note' },
-  { icon: <NotesSharp />, to: routes.notes.route, text: 'Notes' },
-  { icon: <DeleteSharp />, to: routes.trash.route, text: 'Trash' },
+  sidebarLinks: {
+    color: theme.palette.background.default,
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: '100%',
+    cursor: 'pointer',
+  },
+  active: {
+    backgroundColor: '#202020',
+    color: theme.palette.text.secondary,
+  },
+  activeIconColor: {
+    color: theme.palette.primary.main,
+  },
+}));
+
+// Sidebar routes with title and respective icons
+const sidebarRoutes = [
+  { icon: <AddOutlined />, pathname: '/create', title: strings.CREATE_NOTE },
+  { icon: <BookOutlined />, pathname: '/notes', title: strings.NOTES },
+  { icon: <DeleteOutlined />, pathname: '/trash', title: strings.TRASH },
 ];
 
-function Sidebar() {
-  const [open, setOpen] = React.useState(false);
+function Sidebar({ window }) {
   const classes = useStyles();
-  const sm = useMediaQuery('(max-width:600px)');
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const [open, setOpen] = useState(false);
+  const [userData, setUserData] = useState();
 
-  React.useEffect(() => {
-    dispatch(getUserDataById(user.uid)).catch((err) => console.log(err));
-  }, [user.uid, dispatch]);
+  const { user } = useAuthContext();
+  const sm = useMediaQuery('(min-width:600px)');
 
-  const sideBarItems = (
-    <>
-      <ListItem className={classes.userInfo}>
-        <ListItemIcon>
-          <Avatar>{user?.username?.split('')[0]}</Avatar>
-        </ListItemIcon>
-        <Typography variant="h6">{user?.username}</Typography>
-      </ListItem>
-      <Divider />
-      {listItems.map((item) => (
-        <ListItem key={item.text}>
-          <NavLink
-            to={item.to}
-            style={{ display: 'contents', textDecoration: 'none' }}
-            activeClassName={classes.active}
-          >
-            <Button
-              fullWidth
-              startIcon={item.icon}
-              style={{
-                color: `${sm ? '#000' : '#bdbdbd'}`,
-                textTransform: 'initial',
-                display: 'flex',
-                justifyContent: 'start',
-                fontSize: '16px',
-                fontFamily: 'inherit',
-                fontWeight: 'bold',
-              }}
-            >
-              {item.text}
-            </Button>
-          </NavLink>
+  const handleDrawerToggle = () => setOpen(!open);
+
+  // MUI documentation styled guide for responsive drawer
+  const container = window ? () => window().document.body : undefined;
+
+  useEffect(() => {
+    if (user?.uid) {
+      getUserDataById(user.uid).then((res) => {
+        setUserData({
+          id: res.id,
+          ...res.data(),
+        });
+      });
+    }
+  }, [user?.uid]);
+
+  // Render List items
+  const renderSidebarListItem = () => {
+    return (
+      <>
+        <ListItem disableGutters>
+          <ListItemIcon>
+            <Avatar>{userData?.username?.split('')[0].toUpperCase()}</Avatar>
+          </ListItemIcon>
+          <Typography variant="h6">{userData?.username}</Typography>
         </ListItem>
-      ))}
-      <ListItem>
-        <Button
-          fullWidth
-          onClick={() => {
-            dispatch(setNotesEmpty());
-            auth.signOut();
-          }}
-          startIcon={<ExitToAppOutlined />}
-          style={{
-            color: `${sm ? '#000' : '#bdbdbd'}`,
-            textTransform: 'initial',
-            display: 'flex',
-            justifyContent: 'start',
-            fontSize: '16px',
-            fontFamily: 'inherit',
-            fontWeight: 'bold',
+        <Divider />
+
+        {sidebarRoutes.map((route) => (
+          <ListItem key={route.title} disableGutters>
+            <NavLink
+              to={route.pathname}
+              key={route.title}
+              activeClassName={classes.active}
+              className={classes.sidebarLinks}
+            >
+              <ListItemIcon>{route.icon}</ListItemIcon>
+              <ListItemText primary={route.title} />
+            </NavLink>
+          </ListItem>
+        ))}
+        <ListItem disableGutters>
+          <Button>
+            <ListItemIcon>
+              <ExitToAppOutlined color="primary" />
+            </ListItemIcon>
+            <ListItemText primary={strings.SIGN_OUT} />
+          </Button>
+        </ListItem>
+      </>
+    );
+  };
+
+  // Render Sidebar Drawer based on viewport width
+  const renderDrawer = () => {
+    if (!sm) {
+      return (
+        <Drawer
+          container={container}
+          variant="temporary"
+          open={open}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
           }}
         >
-          Logout
-        </Button>
-      </ListItem>
-    </>
-  );
+          {renderSidebarListItem()}
+        </Drawer>
+      );
+    }
+    return <div>{renderSidebarListItem()}</div>;
+  };
   return (
-    <>
-      {sm ? (
-        <>
-          <div>
-            <IconButton onClick={() => setOpen(!open)}>
-              <Menu />
-            </IconButton>
-          </div>
-          <SwipeableDrawer open={open} onOpen={() => setOpen(true)} onClose={() => setOpen(false)}>
-            {sideBarItems}
-          </SwipeableDrawer>
-        </>
-      ) : (
-        <div className={classes.sidebarRoot}>{sideBarItems}</div>
-      )}
-    </>
+    <div className={classes.root}>
+      <AppBar position="fixed" className={classes.appbar}>
+        <Toolbar>
+          <IconButton color="inherit" edge="start" onClick={handleDrawerToggle}>
+            <Menu />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Box component="nav">{renderDrawer()}</Box>
+    </div>
   );
 }
 
-export default Sidebar;
+export default memo(Sidebar);

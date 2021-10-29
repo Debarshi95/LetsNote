@@ -1,95 +1,65 @@
 /* eslint-disable react/no-danger */
 import { Box, makeStyles, Typography, IconButton } from '@material-ui/core';
-import { DeleteForeverOutlined, EditRounded, ClearRounded } from '@material-ui/icons';
+import { HighlightOffTwoTone } from '@material-ui/icons';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { useToasts } from 'react-toast-notifications';
-import { deleteNoteAsync, moveNoteToTrashAsync } from '../../features/notesSlice';
+import { Link, useHistory } from 'react-router-dom';
+import { deleteNote } from '../../services';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
-    margin: '0.6rem 0',
-    border: '1.8px solid #bdbdbd',
-    borderRadius: '14px',
-    '& h5,p': {
-      margin: '10px 0',
-      fontFamily: 'inherit',
+    background: theme.palette.background.paper,
+    borderRadius: '0.25rem',
+    height: 'fit-content',
+    marginTop: '1rem',
+    '& > h4': {
+      fontWeight: 300,
+      fontSize: '1.65rem',
     },
+  },
+  noteContent: {
+    margin: '0.6rem 0',
   },
   noteInfo: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    '& > div': {
-      display: 'flex',
-      marginLeft: '10px',
-    },
   },
 }));
 
-function NoteCard({ note, type }) {
+function NoteCard({ note }) {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const { addToast } = useToasts();
+
   const history = useHistory();
 
-  const moveNoteToTrash = (noteId) => {
-    dispatch(moveNoteToTrashAsync(noteId)).then(() => {
-      addToast('Moved to trash', {
-        appearance: 'success',
-        autoDismiss: 'true',
-      });
-    });
+  const deleteCurrentNote = async (e, noteId) => {
+    e.preventDefault();
+    try {
+      await deleteNote(noteId);
+    } catch (error) {
+      console.log(error, history);
+    }
   };
-
-  const deleteNote = (noteId) => {
-    dispatch(deleteNoteAsync(noteId)).then(() => {
-      addToast('Note deleted successfully!!', {
-        appearance: 'success',
-        autoDismiss: 'true',
-      });
-    });
-  };
-
-  const editNote = (noteId) => history.push(`/edit/${noteId}`, { noteId });
 
   return (
-    <Box className={classes.root}>
-      <Typography component="h5" variant="h5">
-        {note.title}
-      </Typography>
-      <div dangerouslySetInnerHTML={{ __html: note.content }} />
-      <div className={classes.noteInfo}>
-        <Typography variant="body2" component="h5">
-          Last Edited: {note?.lastEdited?.toDate()?.toString()}
+    <Link to={{ pathname: `/edit/${note.id}`, state: { noteId: note.id } }}>
+      <Box className={classes.root}>
+        <Typography component="h4" variant="h4">
+          {note.title}
         </Typography>
-        <div>
-          {type === 'trash' ? (
-            <>
-              <IconButton onClick={() => deleteNote(note.id)}>
-                <ClearRounded />
-              </IconButton>
-
-              <IconButton onClick={() => editNote(note.id)}>
-                <EditRounded />
-              </IconButton>
-            </>
-          ) : (
-            <>
-              <IconButton onClick={() => moveNoteToTrash(note.id)}>
-                <DeleteForeverOutlined />
-              </IconButton>
-
-              <IconButton onClick={() => editNote(note.id)}>
-                <EditRounded />
-              </IconButton>
-            </>
-          )}
+        <div dangerouslySetInnerHTML={{ __html: note.content }} className={classes.noteContent} />
+        <div className={classes.noteInfo}>
+          <Typography variant="body2" component="h5">
+            Last Edited: {note?.lastEdited?.toDate()?.toString()}
+          </Typography>
+          <div>
+            <IconButton onClick={(e) => deleteCurrentNote(e, note.id)}>
+              <HighlightOffTwoTone />
+            </IconButton>
+          </div>
         </div>
-      </div>
-    </Box>
+      </Box>
+    </Link>
   );
 }
 

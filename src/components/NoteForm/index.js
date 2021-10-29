@@ -1,42 +1,47 @@
-import { makeStyles } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import { Box, makeStyles } from '@material-ui/core';
+import React, { useCallback, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import strings from '../../constant/strings';
+
 import debounceTextInput from '../../helpers/userinputdelay';
 
 const useStyles = makeStyles((theme) => ({
-  noteTitle: {
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+  },
+  titleInputWrapper: {
+    marginBottom: '1rem',
+  },
+  titleInput: {
     outline: 'none',
     width: '100%',
-    padding: '10px 14px',
-    margin: '14px 0 8px 0',
-    fontSize: '16px',
+    padding: '0.8rem 1rem',
+    marginTop: '1rem',
+    fontSize: '1rem',
+    fontFamily: 'inherit',
   },
   editor: {
-    margin: '1rem 0',
     '& .ql-container.ql-snow': {
-      height: 'auto',
-      minHeight: 'calc(100vh - 214px)',
-      fontSize: '16px',
-      color: '#000',
+      minHeight: 'calc(100vh - 20rem)',
+      fontSize: '1rem',
+      fontFamily: 'inherit',
+      [theme.breakpoints.up('sm')]: {
+        minHeight: 'calc(100vh - 15rem)',
+      },
     },
-  },
-  error: {
-    margin: 0,
-    color: theme.palette.error.main,
-    fontWeight: 'bold',
-    fontFamily: 'inherit',
-    fontSize: '0.9rem',
   },
 }));
 
 function NoteForm({ title: defaultTitle, body: defaultBody }) {
   const classes = useStyles();
   const [error, setError] = React.useState('');
-  const inputRef = React.useRef();
-  const editorRef = React.useRef();
+  const inputRef = useRef();
+  const editorRef = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     editorRef.current.focus();
   }, []);
 
@@ -58,31 +63,33 @@ function NoteForm({ title: defaultTitle, body: defaultBody }) {
       setError('');
     }
     if (value === '') {
-      setError('Title cannot be empty');
+      setError(strings.NO_EMPTY_TITLE);
     }
 
     updateDocument({ title: value, body: editorRef.current.state.value });
   };
 
   return (
-    <div>
-      <input
-        type="body"
-        onChange={handleTitleChange}
-        aria-label="Title"
-        placeholder="Title"
-        className={classes.noteTitle}
-        ref={inputRef}
-        defaultValue={defaultTitle}
-      />
-      {error && <p className={classes.error}>{error}</p>}
+    <Box className={classes.root}>
+      <div className={classes.titleInputWrapper}>
+        <input
+          type="body"
+          onChange={handleTitleChange}
+          aria-label="Title"
+          placeholder="Title"
+          className={classes.titleInput}
+          ref={inputRef}
+          defaultValue={defaultTitle}
+        />
+        {error && <p className={classes.error}>{error}</p>}
+      </div>
       <ReactQuill
         className={classes.editor}
         onChange={handleBodyChange}
         ref={editorRef}
         defaultValue={defaultBody}
       />
-    </div>
+    </Box>
   );
 }
 NoteForm.defaultProps = {

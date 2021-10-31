@@ -6,7 +6,8 @@ import Navbar from '../../components/Navbar';
 const useStyles = makeStyles((theme) => ({
   root: {
     background: theme.palette.primary.main,
-    minHeight: '100vh',
+    minHeight: 'inherit',
+    flex: 1,
   },
 }));
 function Home() {

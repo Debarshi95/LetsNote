@@ -1,36 +1,31 @@
 import { makeStyles, TextField } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { PersonOutlineOutlined, EmailOutlined, LockOutlined } from '@material-ui/icons';
 import ButtonSubmitting from '../../components/ButtonSubmitting';
 import routes from '../../constant/routes';
-import { auth } from '../../firebase';
-import { checkIfUserNameTaken, saveUserToDb } from '../../features/userSlice';
+import strings from '../../constant/strings';
+import { checkUserNameTaken, createUser, registerWithCredentials } from '../../services';
 
 const useStyles = makeStyles((theme) => ({
-  signUpRoot: {
-    width: '100%',
+  root: {
     display: 'flex',
-    alignItems: 'center',
     flex: 1,
-    [theme.breakpoints.down('xs')]: {
-      alignItems: 'initial',
+    [theme.breakpoints.up('sm')]: {
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   },
-  signUpCard: {
-    width: '440px',
-    margin: '1rem auto',
-    padding: '2rem 4rem',
-    background: '#fff',
-    borderRadius: '4px',
+  cardWrapper: {
+    width: '100%',
+    padding: '2rem',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-      padding: '2rem 3rem',
-      margin: 0,
+    background: theme.palette.background.paper,
+    [theme.breakpoints.up('sm')]: {
+      width: '25rem',
+      borderRadius: '0.25rem',
     },
 
     '& > h1, h4': {
@@ -39,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 'bold',
     },
     '& > h4': {
-      margin: '0 0 22px 0',
+      margin: '0 0 1.25rem 0',
     },
     '& > p': {
       textAlign: 'center',
@@ -55,59 +50,48 @@ const useStyles = makeStyles((theme) => ({
 
 function SignUp() {
   const classes = useStyles();
-
-  const [input, setInput] = React.useState({
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [input, setInput] = useState({
     username: '',
     email: '',
     password: '',
   });
-  const [submitting, setSubmitting] = React.useState(false);
-  const [error, setError] = React.useState('');
+
   const history = useHistory();
-  const dispatch = useDispatch();
 
   const setSignUp = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    const { username, email, password } = input;
+
     try {
-      const usernameTaken = await dispatch(checkIfUserNameTaken(input.username));
-      // console.log(usernameTaken);
-      if (usernameTaken) {
-        setSubmitting(false);
-        setInput({
-          ...input,
-          password: '',
-        });
-        setError('Username taken. Please try another one.');
-      } else {
-        const newUser = await auth.createUserWithEmailAndPassword(input.email, input.password);
+      // Check if username taken is available or not
+      const taken = await checkUserNameTaken(username);
 
-        await dispatch(saveUserToDb({ user: newUser.user, username: input.username }));
+      if (!taken) {
+        const res = await registerWithCredentials(email, password);
 
-        history.push(`/notes`);
+        if (res?.user) {
+          await createUser({ username, email, uid: res.user.uid });
+          history.push(routes.notes.route);
+        }
       }
     } catch (err) {
-      // console.log(err);
-      setSubmitting(false);
       setInput({
         ...input,
         password: '',
       });
-      setError(err.message);
+      setError(err?.message || strings.SOMETHING_WENT_WRONG);
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className={classes.signUpRoot}>
-      {/* <IconButton
-        className={classes.buttonBack}
-        onClick={() => history.goBack()}
-      >
-        <ArrowBackSharp />
-      </IconButton> */}
-      <div className={classes.signUpCard}>
-        <h1>Sign Up</h1>
-        <h4>Sign up to get started</h4>
+    <div className={classes.root}>
+      <div className={classes.cardWrapper}>
+        <h1>{strings.SIGN_UP}</h1>
+        <h4>{strings.GET_STARTED}</h4>
 
         <form autoComplete="off">
           <TextField
@@ -158,12 +142,12 @@ function SignUp() {
               input.email === '' ||
               input.password === ''
             }
-            btnText="Sign up"
+            btnText={strings.SIGN_UP}
           />
         </form>
-        {error && <p className="error"> {error}</p>}
+        {error && <p className="error">{error}</p>}
         <p>
-          Have an account? <Link to={routes.signIn.route}>Sign in</Link>
+          Have an account? <Link to={routes.signIn.route}>{strings.SIGN_IN}</Link>
         </p>
       </div>
     </div>

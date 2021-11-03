@@ -1,18 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import './index.css';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import ThemeProvider from './providers/ThemeProvider';
-import AuthProvider from './providers/AuthProvider';
+import { createStore } from './store/configureStore';
 
+const store = createStore();
 ReactDOM.render(
   <React.StrictMode>
-    <AuthProvider>
+    <Provider store={store}>
       <ThemeProvider>
         <App />
       </ThemeProvider>
-    </AuthProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

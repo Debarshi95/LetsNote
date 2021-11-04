@@ -1,42 +1,37 @@
 import React, { Suspense } from 'react';
-import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
+import { Switch, BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Loader from '../Loader';
-import routeConfig from '../../utils/routeConfig';
-import PrivateRoute from '../PrivateRoute';
-import Sidebar from '../Sidebar';
-import routes from '../../constant/routes';
+import routes from '../../utils/routes';
+import Home from '../../pages/Home/Loadable';
+import SignIn from '../../pages/SignIn/Loadable';
+import SignUp from '../../pages/SignUp/Loadable';
+import Notes from '../../pages/Notes/Loadable';
+import CreateNote from '../../pages/CreateNote/Loadable';
 
 function MainRouter() {
+  const { isAuthenticated } = useSelector((state) => state.auth.isAuthenticated);
   return (
     <Router>
-      <Route
-        path={[routes.notes.route, routes.create.route, routes.trash.route, routes.edit.route]}
-        component={Sidebar}
-      />
       <Suspense fallback={<Loader />}>
+        <Route path={routes.home.route} exact={routes.home.exact}>
+          <Home />
+        </Route>
         <Switch>
-          {Object.keys(routeConfig).map((key) => {
-            const Component = routeConfig[key].component;
-            const isProtected = routeConfig[key].protected;
-            if (isProtected) {
-              return (
-                <PrivateRoute
-                  component={Component}
-                  key={key}
-                  exact={routeConfig[key].exact}
-                  path={routeConfig[key].route}
-                />
-              );
-            }
-            return (
-              <Route
-                key={key}
-                path={routeConfig[key].route}
-                component={Component}
-                exact={routeConfig[key].exact}
-              />
-            );
-          })}
+          <Route path={routes.signin.route} exact={routes.signin.exact}>
+            {isAuthenticated ? <Redirect to={routes.notes.route} /> : <SignIn />}
+          </Route>
+          <Route path={routes.signup.route} exact={routes.signup.exact}>
+            {isAuthenticated ? <Redirect to={routes.notes.route} /> : <SignUp />}
+          </Route>
+          {isAuthenticated ? (
+            <>
+              <Route path={routes.notes.route} exact={routes.notes.exact} component={Notes} />
+              <Route path={routes.create.route} exact={routes.notes.exact} component={CreateNote} />
+            </>
+          ) : (
+            <Redirect to={routes.home.route} />
+          )}
         </Switch>
       </Suspense>
     </Router>

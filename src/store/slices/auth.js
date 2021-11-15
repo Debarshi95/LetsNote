@@ -1,19 +1,26 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { signinWithCredentials } from '../../services';
+import { signinWithCredentials, signout } from '../../services';
 
-const signIn = createAsyncThunk('auth/signIn', async (inputData) => {
-  try {
-    const { email, password } = inputData;
-    const res = await signinWithCredentials(email, password);
-    console.log({ res });
-  } catch (error) {
-    //
+export const requestSignIn = createAsyncThunk(
+  'auth/signin',
+  async (inputData, { rejectWithValue }) => {
+    try {
+      const { email, password } = inputData;
+      const res = await signinWithCredentials(email, password);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error?.message);
+    }
   }
+);
+
+export const requestSignOut = createAsyncThunk('auth/signout', async () => {
+  await signout();
 });
 
 const initialState = {
-  loading: true,
+  loading: false,
   user: null,
   error: '',
   isAuthenticated: false,
@@ -32,15 +39,15 @@ const authSlice = createSlice({
     },
   },
   extraReducers: {
-    [signIn.pending]: (state) => {
+    [requestSignIn.pending]: (state) => {
       state.loading = true;
     },
-    [signIn.fulfilled]: (state, action) => {
+    [requestSignIn.fulfilled]: (state, action) => {
       state.user = action.payload;
       state.isAuthenticated = true;
       state.loading = false;
     },
-    [signIn.rejected]: (state, action) => {
+    [requestSignIn.rejected]: (state, action) => {
       state.isAuthenticated = false;
       state.loading = false;
       state.error = action.payload;

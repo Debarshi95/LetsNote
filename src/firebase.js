@@ -19,8 +19,9 @@ const initFirebase = () => {
 };
 
 const app = initFirebase();
-
+const auth = firebase.auth();
+const firestore = firebase.firestore();
 const { GoogleAuthProvider } = firebase.auth;
 const { serverTimestamp } = firebase.firestore.FieldValue;
 
-export { app as firebase, serverTimestamp, GoogleAuthProvider };
+export { app as firebase, auth, serverTimestamp, firestore, GoogleAuthProvider };

@@ -1,54 +1,48 @@
-import { makeStyles, TextField } from '@material-ui/core';
+import { makeStyles, TextField, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { EmailOutlined, LockOutlined } from '@material-ui/icons';
-import ButtonSubmitting from '../../components/ButtonSubmitting';
-import routes from '../../constant/routes';
+import LoadingButton from '../../components/LoadingButton';
+import Navbar from '../../components/Navbar';
+import routes from '../../utils/routes';
 import strings from '../../constant/strings';
 import { requestSignIn } from '../../store/slices/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    flex: 1,
-    [theme.breakpoints.up('sm')]: {
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
+    flexDirection: 'column',
+    height: '100vh',
   },
-  cardWrapper: {
-    width: '100%',
-    padding: '2rem',
+  cardContainer: {
+    padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    height: 'inherit',
     background: theme.palette.background.paper,
     [theme.breakpoints.up('sm')]: {
-      width: '25rem',
+      width: theme.spacing(50),
       borderRadius: '0.25rem',
+      flex: 1,
+      margin: 'auto',
+      maxHeight: '72vh',
+      padding: theme.spacing(3),
     },
-
-    '& > h1, h4': {
-      textAlign: 'center',
+    '& h1': {
+      marginBottom: theme.spacing(1),
+    },
+    '& a': {
+      textDecoration: 'none',
+      fontWeight: 500,
       color: theme.palette.primary.main,
-      fontWeight: 'bold',
-    },
-    '& > h4': {
-      margin: '0 0 1.25rem 0',
-    },
-    '& > p': {
-      textAlign: 'center',
-    },
-
-    '& > form': {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
     },
   },
-  link: {
-    color: theme.palette.primary.main,
+  cardForm: {
+    margin: '3rem 0 0.5rem 0',
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
@@ -87,11 +81,11 @@ function SignIn() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.cardWrapper}>
+      <Navbar />
+      <div className={classes.cardContainer}>
         <h1>{strings.SIGN_IN}</h1>
         <h4>{strings.SIGN_IN_CONTINUE}</h4>
-
-        <form autoComplete="off">
+        <form autoComplete="off" className={classes.cardForm}>
           <TextField
             type="email"
             name="email"
@@ -118,15 +112,22 @@ function SignIn() {
               startAdornment: <LockOutlined />,
             }}
           />
-          <ButtonSubmitting submitting={loading} submit={handleSignIn} btnText={strings.SIGN_IN} />
+
+          <LoadingButton
+            loading={loading}
+            onClick={handleSignIn}
+            text={strings.SIGN_IN}
+            disabled={input.email === '' || input.password === ''}
+          />
         </form>
-        {error && <p className="error">{error}</p>}
-        <p>
-          Don&apos;t have an account?{' '}
-          <Link to={routes.signup.route} className={classes.link}>
-            {strings.SIGN_UP}
-          </Link>
-        </p>
+        {error && (
+          <Typography component="h5" variant="subtitle2" color="error" align="center">
+            {error}
+          </Typography>
+        )}
+        <Typography component="h4" variant="body1" align="center">
+          Don&apos;t have an account? <Link to={routes.signup.route}>{strings.SIGN_UP}</Link>
+        </Typography>
       </div>
     </div>
   );

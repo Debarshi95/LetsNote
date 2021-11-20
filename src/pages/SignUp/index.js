@@ -1,99 +1,96 @@
-import { makeStyles, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
+import { makeStyles, TextField, Typography } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { PersonOutlineOutlined, EmailOutlined, LockOutlined } from '@material-ui/icons';
-import ButtonSubmitting from '../../components/ButtonSubmitting';
-import routes from '../../constant/routes';
+import { requestSignUp } from '../../store/slices/auth';
+import LoadingButton from '../../components/LoadingButton';
+import routes from '../../utils/routes';
 import strings from '../../constant/strings';
-import { checkUserNameTaken, createUser, registerWithCredentials } from '../../services';
+import Navbar from '../../components/Navbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    flex: 1,
-    [theme.breakpoints.up('sm')]: {
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
+    flexDirection: 'column',
+    height: '100vh',
   },
-  cardWrapper: {
-    width: '100%',
-    padding: '2rem',
+  cardContainer: {
+    padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    height: 'inherit',
     background: theme.palette.background.paper,
     [theme.breakpoints.up('sm')]: {
-      width: '25rem',
+      width: theme.spacing(50),
       borderRadius: '0.25rem',
+      flex: 1,
+      margin: 'auto',
+      maxHeight: '72vh',
+      padding: theme.spacing(3),
     },
-
-    '& > h1, h4': {
-      textAlign: 'center',
+    '& h1': {
+      marginBottom: theme.spacing(1),
+    },
+    '& a': {
+      textDecoration: 'none',
+      fontWeight: 500,
       color: theme.palette.primary.main,
-      fontWeight: 'bold',
     },
-    '& > h4': {
-      margin: '0 0 1.25rem 0',
-    },
-    '& > p': {
-      textAlign: 'center',
-    },
-
-    '& > form': {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-    },
+  },
+  cardForm: {
+    margin: '2.5rem 0 0.5rem 0',
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
 function SignUp() {
-  const classes = useStyles();
-  const [error, setError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [input, setInput] = useState({
     username: '',
     email: '',
     password: '',
   });
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
+
+  const classes = useStyles();
 
   const history = useHistory();
 
-  const setSignUp = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
-    const { username, email, password } = input;
 
+    const { username, email, password } = input;
+    if (!username || !email || !password) return;
     try {
       // Check if username taken is available or not
-      const taken = await checkUserNameTaken(username);
-
-      if (!taken) {
-        const res = await registerWithCredentials(email, password);
-
-        if (res?.user) {
-          await createUser({ username, email, uid: res.user.uid });
-          history.push(routes.notes.route);
-        }
+      const res = await dispatch(requestSignUp({ username, email, password })).unwrap();
+      if (res?.id) {
+        history.push(routes.notes.route);
       }
     } catch (err) {
       setInput({
         ...input,
         password: '',
       });
-      setError(err?.message || strings.SOMETHING_WENT_WRONG);
-      setSubmitting(false);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
   };
 
   return (
     <div className={classes.root}>
-      <div className={classes.cardWrapper}>
+      <Navbar />
+      <div className={classes.cardContainer}>
         <h1>{strings.SIGN_UP}</h1>
         <h4>{strings.GET_STARTED}</h4>
 
-        <form autoComplete="off">
+        <form autoComplete="off" className={classes.cardForm}>
           <TextField
             type="text"
             name="username"
@@ -101,7 +98,7 @@ function SignUp() {
             placeholder="Username"
             aria-label="Username"
             value={input.username}
-            onChange={({ target }) => setInput({ ...input, [target.name]: target.value })}
+            onChange={handleChange}
             InputProps={{
               disableUnderline: true,
               startAdornment: <PersonOutlineOutlined />,
@@ -114,7 +111,7 @@ function SignUp() {
             placeholder="Email"
             aria-label="Email"
             value={input.email}
-            onChange={({ target }) => setInput({ ...input, [target.name]: target.value })}
+            onChange={handleChange}
             InputProps={{
               disableUnderline: true,
               startAdornment: <EmailOutlined />,
@@ -127,28 +124,27 @@ function SignUp() {
             placeholder="Password"
             aria-label="Password"
             value={input.password}
-            onChange={({ target }) => setInput({ ...input, [target.name]: target.value })}
+            onChange={handleChange}
             InputProps={{
               disableUnderline: true,
               startAdornment: <LockOutlined />,
             }}
           />
-          <ButtonSubmitting
-            submitting={submitting}
-            submit={setSignUp}
-            disabled={
-              input.fullname === '' ||
-              input.username === '' ||
-              input.email === '' ||
-              input.password === ''
-            }
-            btnText={strings.SIGN_UP}
+          <LoadingButton
+            loading={loading}
+            onClick={handleSignup}
+            text={strings.SIGN_IN}
+            disabled={input.username === '' || input.email === '' || input.password === ''}
           />
         </form>
-        {error && <p className="error">{error}</p>}
-        <p>
-          Have an account? <Link to={routes.signIn.route}>{strings.SIGN_IN}</Link>
-        </p>
+        {error && (
+          <Typography component="h4" variant="body1" color="error" align="center">
+            {error}
+          </Typography>
+        )}
+        <Typography component="h4" variant="body1" align="center">
+          Have an account? <Link to={routes.signin.route}>{strings.SIGN_IN}</Link>
+        </Typography>
       </div>
     </div>
   );

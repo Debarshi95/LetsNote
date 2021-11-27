@@ -1,17 +1,16 @@
 import strings from '../constant/strings';
-import { firebase, serverTimestamp } from '../firebase';
+import { firestore, auth, serverTimestamp } from '../firebase';
 
 const registerWithCredentials = async (email, password) => {
-  return firebase.auth().createUserWithEmailAndPassword(email, password);
+  return auth.createUserWithEmailAndPassword(email, password);
 };
 
 const signinWithCredentials = async (email, password) => {
-  return firebase.auth().signInWithEmailAndPassword(email, password);
+  return auth.signInWithEmailAndPassword(email, password);
 };
 
 const checkUserNameTaken = async (username) => {
-  const res = await firebase
-    .firestore()
+  const res = await firestore
     .collection('users')
     .where('username', '==', username.toLowerCase())
     .get();
@@ -23,7 +22,7 @@ const checkUserNameTaken = async (username) => {
 };
 
 const createUser = async ({ username, email, uid }) => {
-  return firebase.firestore().collection('users').add({
+  return firestore.collection('users').add({
     uid,
     username,
     email,
@@ -33,32 +32,45 @@ const createUser = async ({ username, email, uid }) => {
 };
 
 const getUserDataById = async (uid) => {
-  return firebase.firestore().collection('users').doc(uid).get();
+  return firestore.collection('users').doc(uid).get();
 };
 
-const signout = async () => firebase.auth().signOut();
+const signout = async () => auth.signOut();
 
-const createNote = ({ uid, title, content }) => {
-  return firebase
-    .firestore()
-    .collection('notes')
-    .add({
-      userId: uid,
-      title: title || 'New Note',
-      content: content || '',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
+const createNote = ({ userId, title, content }) => {
+  return firestore.collection('notes').add({
+    userId,
+    title: title || 'New Note',
+    content: content || '',
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
 };
 
 const deleteNote = async (noteId) => {
-  return firebase.firestore().collection('notes').doc(noteId).delete();
+  return firestore.collection('notes').doc(noteId).delete();
 };
 
 const getNoteById = async (noteId) => {
-  return firebase.firestore().collection('notes').doc(noteId).get();
+  return firestore.collection('notes').doc(noteId).get();
 };
 
+const getNotes = async (userId) => {
+  return firestore
+    .collection('notes')
+    .where('userId', '==', userId)
+    .orderBy('createdAt', 'desc')
+    .get();
+};
+
+const updateNote = async ({ noteId, userId, title, content }) => {
+  return firestore.collection('notes').doc(noteId).update({
+    userId,
+    title,
+    content,
+    updatedAt: serverTimestamp(),
+  });
+};
 export {
   checkUserNameTaken,
   createUser,
@@ -69,4 +81,6 @@ export {
   createNote,
   deleteNote,
   getNoteById,
+  getNotes,
+  updateNote,
 };

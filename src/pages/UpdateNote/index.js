@@ -1,48 +1,49 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { makeStyles, Typography } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
-import NoteForm from '../../components/NoteForm';
-import { getNoteById } from '../../services';
+import { useSelector } from 'react-redux';
+import NoteEditor from '../../components/NoteEditor';
+import Sidebar from '../../components/Sidebar';
 import strings from '../../constant/strings';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    background: theme.palette.background.paper,
-    flex: 1,
-    padding: '1rem',
     flexDirection: 'column',
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+    },
   },
-  topbar: {
-    fontSize: '0.8rem',
-  },
-  title: {
-    fontWeight: 600,
+  container: {
+    padding: theme.spacing(1),
+    flex: 1,
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(3),
+    },
+    '& h5': {
+      fontWeight: 600,
+    },
   },
 }));
 
 function UpdateNote() {
   const classes = useStyles();
-  const { state } = useLocation();
-  const [note, setNote] = useState();
-
-  useEffect(() => {
-    if (state.noteId) {
-      getNoteById(state.noteId).then((res) => {
-        setNote({ id: res.id, ...res.data() });
-      });
-    }
-  }, [state?.noteId]);
+  const { state: routeState } = useLocation();
+  const note = useSelector((state) =>
+    state.notes.notes.find((_note) => _note.id === routeState.noteId)
+  );
 
   return (
-    <Box className={classes.root}>
-      <div className={classes.topbar}>
+    <div className={classes.root}>
+      <Sidebar />
+      <div className={classes.container}>
         <Typography variant="h5" component="h5" className={classes.title}>
           {strings.UPDATE_NOTE}
         </Typography>
+        {note && <NoteEditor title={note.title} body={note.content} noteId={note.id} />}
       </div>
-      <div>{note && <NoteForm title={note.title} body={note.content} />}</div>
-    </Box>
+    </div>
   );
 }
 

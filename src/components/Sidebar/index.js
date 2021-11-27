@@ -6,43 +6,28 @@ import {
   ListItemText,
   AppBar,
   Toolbar,
-  Box,
-  Drawer,
-  Avatar,
-  Typography,
-  Divider,
-  useMediaQuery,
-  Button,
+  List,
 } from '@material-ui/core';
-import {
-  AddOutlined,
-  BookOutlined,
-  DeleteOutlined,
-  Menu,
-  ExitToAppOutlined,
-} from '@material-ui/icons';
-import React, { useEffect, memo, useState } from 'react';
+import { AddOutlined, BookOutlined, Menu, ExitToAppOutlined } from '@material-ui/icons';
+import React, { memo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import strings from '../../constant/strings';
-import { useAuthContext } from '../../providers/AuthProvider';
-import { getUserDataById } from '../../services';
+import { requestSignOut } from '../../store/slices/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: '#2D2D2D',
     position: 'static',
     '& .MuiSvgIcon-root': {
       color: theme.palette.background.paper,
     },
     [theme.breakpoints.up('sm')]: {
-      width: '16rem',
+      width: theme.spacing(34),
       position: 'sticky',
+      height: '100vh',
       top: 0,
-      maxHeight: '100vh',
-      padding: '1rem 0',
-    },
-    [theme.breakpoints.up('md')]: {
-      width: '18rem',
+      padding: theme.spacing(2),
+      backgroundColor: theme.palette.secondary.main,
     },
   },
   appbar: {
@@ -52,21 +37,19 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
-
   sidebarLinks: {
-    color: theme.palette.background.default,
+    color: theme.palette.text.secondary,
     display: 'flex',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     width: '100%',
+    textDecoration: 'none',
     cursor: 'pointer',
+    fontWeight: 600,
   },
   active: {
-    backgroundColor: '#202020',
-    color: theme.palette.text.secondary,
-  },
-  activeIconColor: {
-    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: theme.spacing(0.2),
   },
 }));
 
@@ -74,45 +57,24 @@ const useStyles = makeStyles((theme) => ({
 const sidebarRoutes = [
   { icon: <AddOutlined />, pathname: '/create', title: strings.CREATE_NOTE },
   { icon: <BookOutlined />, pathname: '/notes', title: strings.NOTES },
-  { icon: <DeleteOutlined />, pathname: '/trash', title: strings.TRASH },
 ];
 
-function Sidebar({ window }) {
+function Sidebar() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [userData, setUserData] = useState();
-
-  const { user } = useAuthContext();
-  const sm = useMediaQuery('(min-width:600px)');
-
   const handleDrawerToggle = () => setOpen(!open);
+  const dispatch = useDispatch();
 
-  // MUI documentation styled guide for responsive drawer
-  const container = window ? () => window().document.body : undefined;
-
-  useEffect(() => {
-    if (user?.uid) {
-      getUserDataById(user.uid).then((res) => {
-        setUserData({
-          id: res.id,
-          ...res.data(),
-        });
-      });
-    }
-  }, [user?.uid]);
-
-  // Render List items
-  const renderSidebarListItem = () => {
-    return (
-      <>
-        <ListItem disableGutters>
-          <ListItemIcon>
-            <Avatar>{userData?.username?.split('')[0].toUpperCase()}</Avatar>
-          </ListItemIcon>
-          <Typography variant="h6">{userData?.username}</Typography>
-        </ListItem>
-        <Divider />
-
+  return (
+    <div className={classes.root}>
+      <AppBar position="fixed" className={classes.appbar}>
+        <Toolbar>
+          <IconButton color="inherit" edge="start" onClick={handleDrawerToggle}>
+            <Menu />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <List>
         {sidebarRoutes.map((route) => (
           <ListItem key={route.title} disableGutters>
             <NavLink
@@ -126,47 +88,17 @@ function Sidebar({ window }) {
             </NavLink>
           </ListItem>
         ))}
-        <ListItem disableGutters>
-          <Button>
-            <ListItemIcon>
-              <ExitToAppOutlined color="primary" />
-            </ListItemIcon>
-            <ListItemText primary={strings.SIGN_OUT} />
-          </Button>
-        </ListItem>
-      </>
-    );
-  };
-
-  // Render Sidebar Drawer based on viewport width
-  const renderDrawer = () => {
-    if (!sm) {
-      return (
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={open}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
+        <ListItem
+          disableGutters
+          className={classes.sidebarLinks}
+          onClick={() => dispatch(requestSignOut())}
         >
-          {renderSidebarListItem()}
-        </Drawer>
-      );
-    }
-    return <div>{renderSidebarListItem()}</div>;
-  };
-  return (
-    <div className={classes.root}>
-      <AppBar position="fixed" className={classes.appbar}>
-        <Toolbar>
-          <IconButton color="inherit" edge="start" onClick={handleDrawerToggle}>
-            <Menu />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Box component="nav">{renderDrawer()}</Box>
+          <ListItemIcon>
+            <ExitToAppOutlined />
+          </ListItemIcon>
+          <ListItemText primary={strings.SIGN_OUT} />
+        </ListItem>
+      </List>
     </div>
   );
 }

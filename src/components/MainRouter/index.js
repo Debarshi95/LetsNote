@@ -8,30 +8,36 @@ import SignIn from '../../pages/SignIn/Loadable';
 import SignUp from '../../pages/SignUp/Loadable';
 import Notes from '../../pages/Notes/Loadable';
 import CreateNote from '../../pages/CreateNote/Loadable';
+import UpdateNote from '../../pages/UpdateNote';
+import NotFound from '../../pages/NotFound';
 
 function MainRouter() {
-  const { isAuthenticated } = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <Router>
       <Suspense fallback={<Loader />}>
-        <Route path={routes.home.route} exact={routes.home.exact}>
-          <Home />
-        </Route>
         <Switch>
+          <Route path={routes.create.route} exact={routes.create.exact}>
+            {isAuthenticated ? <CreateNote /> : <Redirect to={routes.home.route} />}
+          </Route>
+          <Route path={routes.edit.route} exact={routes.edit.exact}>
+            {isAuthenticated ? <UpdateNote /> : <Redirect to={routes.home.route} />}
+          </Route>
+          <Route path={routes.notes.route} exact={routes.notes.exact}>
+            {isAuthenticated ? <Notes /> : <Redirect to={routes.home.route} />}
+          </Route>
           <Route path={routes.signin.route} exact={routes.signin.exact}>
-            {isAuthenticated ? <Redirect to={routes.notes.route} /> : <SignIn />}
+            {!isAuthenticated ? <SignIn /> : <Redirect to={routes.notes.route} />}
           </Route>
           <Route path={routes.signup.route} exact={routes.signup.exact}>
-            {isAuthenticated ? <Redirect to={routes.notes.route} /> : <SignUp />}
+            {!isAuthenticated ? <SignUp /> : <Redirect to={routes.notes.route} />}
           </Route>
-          {isAuthenticated ? (
-            <>
-              <Route path={routes.notes.route} exact={routes.notes.exact} component={Notes} />
-              <Route path={routes.create.route} exact={routes.notes.exact} component={CreateNote} />
-            </>
-          ) : (
-            <Redirect to={routes.home.route} />
-          )}
+          <Route path={routes.home.route} exact={routes.home.exact}>
+            <Home />
+          </Route>
+          <Route path="*">
+            <NotFound />
+          </Route>
         </Switch>
       </Suspense>
     </Router>

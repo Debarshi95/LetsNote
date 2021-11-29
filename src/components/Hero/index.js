@@ -12,18 +12,17 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     flexDirection: 'column-reverse',
     [theme.breakpoints.up('md')]: {
-      maxWidth: '70%',
+      maxWidth: '60%',
       flexDirection: 'row',
       justifyContent: 'space-between',
       margin: 'auto',
-      height: 'calc(100vh - 8rem)',
+      height: '80%',
     },
   },
   hero: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-
     '& .MuiTypography-h2': {
       fontFamily: 'inherit',
       fontSize: '1.7rem',
@@ -42,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       justifyContent: 'center',
       marginLeft: '1rem',
+      textDecoration: 'none',
+      color: theme.palette.text.secondary,
     },
   },
   heroImg: {

@@ -1,43 +1,54 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import React from 'react';
-import NoteForm from '../../components/NoteForm';
+import React, { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { makeStyles, Typography } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { requestCreateNote } from '../../store/slices/notes';
+import NoteEditor from '../../components/NoteEditor';
+import strings from '../../constant/strings';
 import Sidebar from '../../components/Sidebar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    flexDirection: 'row',
-    [theme.breakpoints.down('xs')]: {
-      flexDirection: 'column',
+    flexDirection: 'column',
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
     },
   },
-  topbar: {
-    fontSize: '14px',
-    marginTop: '1rem',
-  },
-  title: {
-    fontFamily: 'inherit',
-    fontWeight: 'bold',
+  formContainer: {
+    padding: theme.spacing(1),
+    flex: 1,
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(3),
+    },
+    '& h5': {
+      fontWeight: 600,
+    },
   },
 }));
 
 function CreateNote() {
   const classes = useStyles();
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(requestCreateNote({ userId: user.uid }))
+      .then(() => toast.success(strings.EMPTY_NOTE_CREATED, { position: 'top-right' }))
+      .catch((err) => toast.error(err?.message || strings.SOMETHING_WENT_WRONG));
+  }, [dispatch, user.uid]);
 
   return (
-    <section className={classes.root}>
+    <div className={classes.root}>
       <Sidebar />
-      <Box display="flex" flexDirection="column" flex={1} padding="1rem">
-        <div className={classes.topbar}>
-          <Typography variant="h5" component="h5" className={classes.title}>
-            Create new note
-          </Typography>
-        </div>
-        <div>
-          <NoteForm />
-        </div>
-      </Box>
-    </section>
+      <div className={classes.formContainer}>
+        <Typography variant="h5" component="h5">
+          {strings.CREATE_NOTE}
+        </Typography>
+        <NoteEditor />
+      </div>
+    </div>
   );
 }
 

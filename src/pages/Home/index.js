@@ -5,14 +5,13 @@ import Navbar from '../../components/Navbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    background: theme.palette.primary.main,
-    minHeight: 'inherit',
-    flex: 1,
+    backgroundColor: theme.palette.primary.main,
+    height: '100vh',
+    overflow: 'hidden scroll',
   },
 }));
 function Home() {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <Navbar />

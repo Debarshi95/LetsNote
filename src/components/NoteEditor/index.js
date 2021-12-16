@@ -27,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
     '& .ql-container.ql-snow': {
       fontSize: theme.spacing(2),
       fontFamily: 'inherit',
+      wordBreak: 'break-all',
+      minHeight: '65vh',
       [theme.breakpoints.up('sm')]: {
         minHeight: 'calc(100vh - 15rem)',
       },
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NoteForm({ title: defaultTitle, body: defaultBody, noteId }) {
+const NoteEditor = ({ title: defaultTitle, body: defaultBody, noteId }) => {
   const classes = useStyles();
   const inputRef = useRef();
   const editorRef = useRef();
@@ -50,7 +52,7 @@ function NoteForm({ title: defaultTitle, body: defaultBody, noteId }) {
     debounceTextInput(({ title, body }) => {
       dispatch(requestUpdateNote({ content: body, title, noteId, userId: user.uid }));
     }, 500),
-    []
+    [noteId, user?.uid]
   );
 
   const handleBodyChange = (value) => {
@@ -82,11 +84,11 @@ function NoteForm({ title: defaultTitle, body: defaultBody, noteId }) {
       />
     </Box>
   );
-}
-NoteForm.defaultProps = {
+};
+NoteEditor.defaultProps = {
   title: '',
   body: '',
-  noteId: null,
+  noteId: '',
 };
 
-export default NoteForm;
+export default NoteEditor;

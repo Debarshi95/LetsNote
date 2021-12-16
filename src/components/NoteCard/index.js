@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    wordBreak: 'break-all',
     '&  h4': {
       fontWeight: 300,
       fontSize: theme.spacing(2.8),
@@ -34,9 +35,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     width: '100%',
   },
+  content: {
+    margin: '1rem 0',
+  },
 }));
 
-function NoteCard({ note }) {
+const NoteCard = ({ note }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -58,7 +62,7 @@ function NoteCard({ note }) {
         <Typography component="h4" variant="h4">
           {note.title}
         </Typography>
-        <div dangerouslySetInnerHTML={{ __html: note.content }} />
+        <div dangerouslySetInnerHTML={{ __html: note.content }} className={classes.content} />
         <div className={classes.noteInfo}>
           <Typography variant="body2" component="h5">
             Last Edited: {note?.updatedAt && formatDate(note.updatedAt)}
@@ -71,6 +75,6 @@ function NoteCard({ note }) {
       </Card>
     </Link>
   );
-}
+};
 
 export default memo(NoteCard);

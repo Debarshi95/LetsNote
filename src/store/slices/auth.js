@@ -16,7 +16,7 @@ export const requestSignIn = createAsyncThunk(
       const res = await signinWithCredentials(email, password);
       return res;
     } catch (error) {
-      return rejectWithValue(error?.message);
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -47,7 +47,7 @@ export const requestSignUp = createAsyncThunk(
 );
 const initialState = {
   loading: false,
-  user: null,
+  user: {},
   error: '',
   isAuthenticated: false,
 };
@@ -58,10 +58,12 @@ const authSlice = createSlice({
     setUser: (state, action) => {
       state.isAuthenticated = true;
       state.user = action.payload;
+      state.loading = false;
     },
     unsetUser: (state) => {
       state.isAuthenticated = false;
       state.user = null;
+      state.loading = false;
     },
   },
   extraReducers: {

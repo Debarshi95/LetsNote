@@ -3,25 +3,26 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { createNote, deleteNote, getNotes, updateNote } from '../../services';
 
 const initialState = {
-  loading: true,
+  loading: false,
   notes: [],
   error: '',
 };
 
 export const requestCreateNote = createAsyncThunk(
-  'notes/createNote',
+  'notes/requestCreateNote',
   async (noteData, { rejectWithValue }) => {
     try {
       const { content, title, userId } = noteData;
-      await createNote({ content, title, userId });
+      const res = await createNote({ content, title, userId });
+      return res?.id;
     } catch (error) {
-      rejectWithValue(error?.message);
+      return rejectWithValue(error?.message);
     }
   }
 );
 
 export const requestDeleteNote = createAsyncThunk(
-  'notes/deleteNote',
+  'notes/requestDeleteNote',
   async (noteId, { rejectWithValue, dispatch }) => {
     try {
       await deleteNote(noteId);
@@ -34,7 +35,7 @@ export const requestDeleteNote = createAsyncThunk(
 );
 
 export const requestUpdateNote = createAsyncThunk(
-  'notes/updateNote',
+  'notes/requestUpdateNote',
   async (noteData, { rejectWithValue }) => {
     const { title, content, userId, noteId } = noteData;
     try {
@@ -46,7 +47,7 @@ export const requestUpdateNote = createAsyncThunk(
 );
 
 export const requestGetNotes = createAsyncThunk(
-  'notes/getNotes',
+  'notes/requestGetNotes',
   async (userId, { rejectWithValue }) => {
     try {
       const res = await getNotes(userId);

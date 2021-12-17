@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { makeStyles, Typography } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
+    minHeight: '100vh',
     [theme.breakpoints.up('sm')]: {
       flexDirection: 'row',
     },
@@ -28,14 +29,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CreateNote() {
+const CreateNote = () => {
+  const [docId, setDocId] = useState('');
   const classes = useStyles();
-  const { user } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(requestCreateNote({ userId: user.uid }))
-      .then(() => toast.success(strings.EMPTY_NOTE_CREATED, { position: 'top-right' }))
+      .unwrap()
+      .then((data) => {
+        setDocId(data);
+        toast.success(strings.EMPTY_NOTE_CREATED, { position: 'top-right' });
+      })
       .catch((err) => toast.error(err?.message || strings.SOMETHING_WENT_WRONG));
   }, [dispatch, user.uid]);
 
@@ -46,10 +52,10 @@ function CreateNote() {
         <Typography variant="h5" component="h5">
           {strings.CREATE_NOTE}
         </Typography>
-        <NoteEditor />
+        <NoteEditor noteId={docId} />
       </div>
     </div>
   );
-}
+};
 
 export default CreateNote;

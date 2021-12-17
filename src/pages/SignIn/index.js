@@ -1,6 +1,6 @@
 import { makeStyles, TextField, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { EmailOutlined, LockOutlined } from '@material-ui/icons';
 import LoadingButton from '../../components/LoadingButton';
@@ -46,10 +46,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignIn() {
+const SignIn = () => {
   const [input, setInput] = useState({ email: '', password: '' });
   const dispatch = useDispatch();
-  const history = useHistory();
   const classes = useStyles();
 
   const { loading, error } = useSelector((state) => state.auth);
@@ -62,10 +61,7 @@ function SignIn() {
     }
     const { email, password } = input;
     try {
-      const res = await dispatch(requestSignIn({ email, password })).unwrap();
-      if (res?.user) {
-        history.push(routes.notes.route);
-      }
+      dispatch(requestSignIn({ email, password })).unwrap();
     } catch (err) {
       setInput({
         ...input,
@@ -131,6 +127,6 @@ function SignIn() {
       </div>
     </div>
   );
-}
+};
 
 export default SignIn;

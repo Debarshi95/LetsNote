@@ -10,21 +10,18 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_APP_ID,
 };
-const app = firebase.initializeApp(firebaseConfig);
-const firestore = app.firestore();
-const auth = app.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-const timeStamp = firebase.firestore.FieldValue.serverTimestamp;
 
-const saveUser = async (uid, fullname, username, email) => {
-  const res = await firestore.collection('users').add({
-    uid,
-    fullname,
-    username,
-    email,
-    createdAt: timeStamp(),
-  });
-  return res;
+const initFirebase = () => {
+  if (!firebase.apps.length) {
+    return firebase.initializeApp(firebaseConfig);
+  }
+  return firebase.app;
 };
 
-export { firestore, auth, timeStamp, googleProvider, saveUser };
+const app = initFirebase();
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+const { GoogleAuthProvider } = firebase.auth;
+const { serverTimestamp } = firebase.firestore.FieldValue;
+
+export { app as firebase, auth, serverTimestamp, firestore, GoogleAuthProvider };

@@ -9,7 +9,7 @@ import {
 } from '../../services';
 
 export const requestSignIn = createAsyncThunk(
-  'auth/signin',
+  'auth/requestSignin',
   async (inputData, { rejectWithValue }) => {
     try {
       const { email, password } = inputData;
@@ -26,7 +26,7 @@ export const requestSignOut = createAsyncThunk('auth/signout', async () => {
 });
 
 export const requestSignUp = createAsyncThunk(
-  'auth/signup',
+  'auth/requestSignup',
   async (inputData, { rejectWithValue }) => {
     try {
       const { email, password, username } = inputData;
@@ -47,7 +47,7 @@ export const requestSignUp = createAsyncThunk(
 );
 const initialState = {
   loading: false,
-  user: {},
+  user: null,
   error: '',
   isAuthenticated: false,
 };
@@ -71,8 +71,7 @@ const authSlice = createSlice({
       state.loading = true;
       state.error = '';
     },
-    [requestSignIn.fulfilled]: (state, action) => {
-      state.user = action.payload;
+    [requestSignIn.fulfilled]: (state) => {
       state.isAuthenticated = true;
       state.loading = false;
     },
@@ -85,8 +84,7 @@ const authSlice = createSlice({
       state.loading = true;
       state.error = '';
     },
-    [requestSignUp.fulfilled]: (state, action) => {
-      state.user = action.payload;
+    [requestSignUp.fulfilled]: (state) => {
       state.isAuthenticated = true;
       state.loading = false;
     },

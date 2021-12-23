@@ -1,7 +1,7 @@
 import { makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import routes from '../../constant/routes';
+import routes from '../../utils/routes';
 import strings from '../../constant/strings';
 
 const useStyles = makeStyles((theme) => ({
@@ -89,7 +89,7 @@ const Hero = () => {
             {strings.FIND_THINGS_FAST}
           </Typography>
         </div>
-        <Link to={routes.signUp.route}>{strings.SIGN_UP}</Link>
+        <Link to={routes.signup.route}>{strings.SIGN_UP}</Link>
       </div>
       <img src="/images/note_banner.jpg" alt="hero" className={classes.heroImg} />
     </div>

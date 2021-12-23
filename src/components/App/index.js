@@ -10,9 +10,8 @@ const App = () => {
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        const { uid, email } = authUser;
-
-        dispatch(setUser({ uid, email }));
+        const user = { uid: authUser.uid, email: authUser.email };
+        dispatch(setUser(user));
       } else {
         dispatch(unsetUser());
       }

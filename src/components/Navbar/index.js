@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Navbar() {
+const Navbar = () => {
   const classes = useStyles();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const xs = useMediaQuery('(max-width:600px)');
@@ -81,6 +81,6 @@ function Navbar() {
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

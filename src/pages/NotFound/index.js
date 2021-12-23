@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-function NotFound() {
+const NotFound = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -25,6 +25,6 @@ function NotFound() {
       </div>
     </div>
   );
-}
+};
 
 export default NotFound;

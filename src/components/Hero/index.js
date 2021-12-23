@@ -67,7 +67,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-function Hero() {
+
+const Hero = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -93,6 +94,6 @@ function Hero() {
       <img src="/images/note_banner.jpg" alt="hero" className={classes.heroImg} />
     </div>
   );
-}
+};
 
 export default Hero;

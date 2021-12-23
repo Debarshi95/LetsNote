@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function UpdateNote() {
+const UpdateNote = () => {
   const classes = useStyles();
   const { state: routeState } = useLocation();
   const note = useSelector((state) =>
@@ -46,6 +46,6 @@ function UpdateNote() {
       </div>
     </div>
   );
-}
+};
 
 export default UpdateNote;

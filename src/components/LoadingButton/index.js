@@ -6,7 +6,7 @@ const progressBarStyle = {
   height: '1.4rem',
 };
 
-function LoadingButton({ loading, onClick, disabled, text }) {
+const LoadingButton = ({ loading, onClick, disabled, text }) => {
   return (
     <>
       {loading ? (
@@ -26,6 +26,6 @@ function LoadingButton({ loading, onClick, disabled, text }) {
       )}
     </>
   );
-}
+};
 
 export default LoadingButton;

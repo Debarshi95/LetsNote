@@ -11,7 +11,7 @@ import CreateNote from '../../pages/CreateNote/Loadable';
 import UpdateNote from '../../pages/UpdateNote';
 import NotFound from '../../pages/NotFound';
 
-function MainRouter() {
+const MainRouter = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <Router>
@@ -42,6 +42,6 @@ function MainRouter() {
       </Suspense>
     </Router>
   );
-}
+};
 
 export default MainRouter;

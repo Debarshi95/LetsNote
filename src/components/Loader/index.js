@@ -9,13 +9,13 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
 });
-function Loader() {
+const Loader = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <CircularProgress />
     </div>
   );
-}
+};
 
 export default Loader;

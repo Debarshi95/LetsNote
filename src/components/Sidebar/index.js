@@ -1,3 +1,4 @@
+import React, { memo, useState, useRef } from 'react';
 import {
   IconButton,
   ListItem,
@@ -11,7 +12,6 @@ import {
   Drawer,
 } from '@material-ui/core';
 import { AddOutlined, BookOutlined, Menu, ExitToAppOutlined } from '@material-ui/icons';
-import React, { memo, useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import strings from '../../constant/strings';

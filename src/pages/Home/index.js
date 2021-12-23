@@ -10,7 +10,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden scroll',
   },
 }));
-function Home() {
+
+const Home = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -18,6 +19,6 @@ function Home() {
       <Hero />
     </div>
   );
-}
+};
 
 export default Home;

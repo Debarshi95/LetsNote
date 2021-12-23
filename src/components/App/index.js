@@ -5,7 +5,7 @@ import { auth } from '../../firebase';
 import MainRouter from '../MainRouter';
 import { setUser, unsetUser } from '../../store/slices/auth';
 
-function App() {
+const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((authUser) => {
@@ -26,6 +26,6 @@ function App() {
       <Toaster />
     </>
   );
-}
+};
 
 export default App;

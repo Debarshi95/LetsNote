@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignUp() {
+const SignUp = () => {
   const [input, setInput] = useState({
     username: '',
     email: '',
@@ -148,6 +148,6 @@ function SignUp() {
       </div>
     </div>
   );
-}
+};
 
 export default SignUp;
